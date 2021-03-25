@@ -13,10 +13,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          AppBarWidget(
-            title: 'Restaurant name',
-            icon: Icons.menu,
-          ),
+         AppBarWidget(title: 'Restaurant name',icon: Icons.menu_outlined,),
         ],
       ),
     );

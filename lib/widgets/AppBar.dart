@@ -16,15 +16,15 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 40, bottom: 15),
+      padding: EdgeInsets.only(top: 10, bottom: 10),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 1.5, color: KBeige)),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           CircleAvatar(
-            radius: 40,
+            radius: 25,
             backgroundColor: KBlue,
             backgroundImage: AssetImage('assets/profil.png'),
           ),
@@ -32,14 +32,14 @@ class _AppBarWidgetState extends State<AppBarWidget> {
           Text(
             widget.title,
             style: TextStyle(
-              fontSize: 30,
+              fontSize: 25,
               color: KBlue,
             ),
           ),
           SizedBox(width: 20,),
           Icon(
             widget.icon,
-            size: 30,
+            size: 25,
             color: KBlue,
           ),
         ],
