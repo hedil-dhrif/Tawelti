@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tawelti/screens/SignInPage.dart';
 import 'screens/start.dart';
 
 void main() {
@@ -10,8 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
-      home: StartPage(),
+      home: SignIn(),
     );
   }
 }
