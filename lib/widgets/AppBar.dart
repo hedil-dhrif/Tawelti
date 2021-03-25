@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:tawelti/constants.dart';
 
-class AppBarWidget extends StatelessWidget {
+class AppBarWidget extends StatefulWidget {
 
+  String title;
+  IconData icon;
+
+  AppBarWidget({this.title, this.icon});
+
+  @override
+  _AppBarWidgetState createState() => _AppBarWidgetState();
+}
+
+class _AppBarWidgetState extends State<AppBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,7 +30,7 @@ class AppBarWidget extends StatelessWidget {
           ),
           SizedBox(width: 20,),
           Text(
-            'Restaurant Name',
+            widget.title,
             style: TextStyle(
               fontSize: 30,
               color: KBlue,
@@ -28,7 +38,7 @@ class AppBarWidget extends StatelessWidget {
           ),
           SizedBox(width: 20,),
           Icon(
-            Icons.menu_rounded,
+            widget.icon,
             size: 30,
             color: KBlue,
           ),

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tawelti/screens/SignUpPage.dart';
 class StartPage extends StatefulWidget {
   @override
   _StartPageState createState() => _StartPageState();
@@ -23,7 +22,9 @@ class _StartPageState extends State<StartPage> {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 100),
           child: Column(
-            children: [],
+            children: [
+              Text('Hello')
+            ],
           ),
         ),
       ),
