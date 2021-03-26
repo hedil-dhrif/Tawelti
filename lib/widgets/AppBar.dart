@@ -5,8 +5,9 @@ class AppBarWidget extends StatefulWidget {
 
   String title;
   IconData icon;
+  Function onpressed;
 
-  AppBarWidget({this.title, this.icon});
+  AppBarWidget({this.title, this.icon, this.onpressed});
 
   @override
   _AppBarWidgetState createState() => _AppBarWidgetState();
@@ -37,10 +38,13 @@ class _AppBarWidgetState extends State<AppBarWidget> {
             ),
           ),
           SizedBox(width: 20,),
-          Icon(
-            widget.icon,
-            size: 25,
-            color: KBlue,
+          IconButton(
+            onPressed: widget.onpressed,
+            icon: Icon(
+              widget.icon,
+              size: 25,
+              color: KBlue,
+            ),
           ),
         ],
       ),

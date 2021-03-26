@@ -33,7 +33,6 @@ class _MyCustomInputBoxState extends State<MyCustomInputBox> {
             ),
           ),
         ),
-        //
         Padding(
           padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
           child: TextFormField(
@@ -46,7 +45,7 @@ class _MyCustomInputBoxState extends State<MyCustomInputBox> {
               });
             },
             style: TextStyle(
-                fontSize: 19,
+                fontSize: 20,
                 color: KBlue,
                 fontWeight: FontWeight.bold),
             decoration: InputDecoration(
