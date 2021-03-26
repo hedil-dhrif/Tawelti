@@ -51,7 +51,7 @@ class _AddReservationState extends State<AddReservation> {
             ),
             Container(
               width: MediaQuery.of(context).size.width*0.85,
-              padding: EdgeInsets.fromLTRB(30, 100, 25, 50),
+              padding: EdgeInsets.fromLTRB(30, 100, 30, 50),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,28 +159,39 @@ class _AddReservationState extends State<AddReservation> {
                   ),
                   SizedBox(height: 20,),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: KBlue),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Row(
-                      children: [
-                        DropdownButton(
-                          value: valueChoose,
-                          onChanged: (newValue) {
-                            setState(() {
-                              valueChoose = newValue;
-                            });
-                          },
-                          items: listItem.map((valueItem) {
-                            return DropdownMenuItem(
-                              value: valueItem,
-                              child: Text(valueItem),
-                            );
-                          }).toList(),
+                    child: DropdownButton(
+                      hint: Text(
+                        'Select Floor : ',
+                        style: TextStyle(
+                          fontSize: 20,
                         ),
-                      ],
+                      ),
+                      icon: Icon(Icons.arrow_drop_down,),
+                      iconSize: 35,
+                      isExpanded: true,
+                      underline: SizedBox(),
+                      value: valueChoose,
+                      onChanged: (newValue) {
+                        setState(() {
+                          valueChoose = newValue;
+                        });
+                      },
+                      items: listItem.map((valueItem) {
+                        return DropdownMenuItem(
+                          value: valueItem,
+                          child: Text(
+                            valueItem,
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ),
                 ],
