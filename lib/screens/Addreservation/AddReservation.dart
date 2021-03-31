@@ -3,6 +3,7 @@ import 'package:tawelti/widgets/AppBar.dart';
 import 'package:tawelti/constants.dart';
 
 import '../HomePage.dart';
+import 'package:tawelti/screens/Addreservation/AddreservationNext.dart';
 
 class AddReservation extends StatefulWidget {
   @override
@@ -32,7 +33,6 @@ class _AddReservationState extends State<AddReservation> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,17 +40,15 @@ class _AddReservationState extends State<AddReservation> {
         body: Stack(
           children: [
             AppBarWidget(
-              title: 'Restaurant name',
+              title: 'Add Reservation',
               icon: Icons.close,
               onpressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomePage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomePage()));
               },
             ),
             Container(
-              width: MediaQuery.of(context).size.width*0.85,
+              width: MediaQuery.of(context).size.width * 0.85,
               padding: EdgeInsets.fromLTRB(30, 100, 30, 50),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -63,7 +61,9 @@ class _AddReservationState extends State<AddReservation> {
                       color: KBlue,
                     ),
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
@@ -74,7 +74,7 @@ class _AddReservationState extends State<AddReservation> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                            '$_counter',
+                          '$_counter',
                           style: TextStyle(
                             fontSize: 30,
                           ),
@@ -102,7 +102,9 @@ class _AddReservationState extends State<AddReservation> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Text(
                     'Pick a date :',
                     style: TextStyle(
@@ -110,7 +112,9 @@ class _AddReservationState extends State<AddReservation> {
                       color: KBlue,
                     ),
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     decoration: BoxDecoration(
@@ -126,20 +130,24 @@ class _AddReservationState extends State<AddReservation> {
                           size: 30,
                         ),
                         GestureDetector(
-                            child: Text(
-                              _datetime == null ? 'Nothing has been picked yet' : _datetime.toString(),
-                              style: TextStyle(
-                                fontSize: 17,
-                              ),
+                          child: Text(
+                            _datetime == null
+                                ? 'Nothing has been picked yet'
+                                : _datetime.toString(),
+                            style: TextStyle(
+                              fontSize: 17,
                             ),
+                          ),
                           onTap: () {
                             showDatePicker(
-                                context: context,
-                                initialDate: _datetime == null ? DateTime.now() : _datetime,
-                                initialDatePickerMode: DatePickerMode.day,
-                                firstDate: DateTime(2021),
-                                lastDate: DateTime(2040),
-                            ).then((date){
+                              context: context,
+                              initialDate: _datetime == null
+                                  ? DateTime.now()
+                                  : _datetime,
+                              initialDatePickerMode: DatePickerMode.day,
+                              firstDate: DateTime(2021),
+                              lastDate: DateTime(2040),
+                            ).then((date) {
                               setState(() {
                                 _datetime = date;
                               });
@@ -149,7 +157,9 @@ class _AddReservationState extends State<AddReservation> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Text(
                     'Floor :',
                     style: TextStyle(
@@ -157,7 +167,9 @@ class _AddReservationState extends State<AddReservation> {
                       color: KBlue,
                     ),
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                     decoration: BoxDecoration(
@@ -171,7 +183,9 @@ class _AddReservationState extends State<AddReservation> {
                           fontSize: 20,
                         ),
                       ),
-                      icon: Icon(Icons.arrow_drop_down,),
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                      ),
                       iconSize: 35,
                       isExpanded: true,
                       underline: SizedBox(),
@@ -194,6 +208,38 @@ class _AddReservationState extends State<AddReservation> {
                       }).toList(),
                     ),
                   ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => AddReservationNext()));
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: KBlue, borderRadius: BorderRadius.circular(10)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Next',
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: KBackgroundColor,
+                                letterSpacing: 2),
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            size: 30,
+                            color: KBackgroundColor,
+                          )
+                        ],
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
