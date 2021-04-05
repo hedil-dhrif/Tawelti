@@ -41,9 +41,7 @@ class _SubmiButtonState extends State<SubmiButton> {
           child: Text(
             widget.title,
             style: TextStyle(
-              fontFamily: 'ProductSans',
               fontSize: widget.size,
-              fontWeight: FontWeight.bold,
               color: widget.color,
             ),
           ),

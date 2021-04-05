@@ -153,7 +153,7 @@ class AddRestaurant extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => HomePage()));
                     },
-                    title: 'Add Restauran',
+                    title: 'Add Restaurant',
                     bcolor: KBeige,
                     size: 25,
                     color: Color(0xFF333133),
