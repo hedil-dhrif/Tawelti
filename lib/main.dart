@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tawelti/screens/AddWaitlist.dart';
 import 'screens/SignInPage.dart';
-import 'screens/Addreservation/AddReservation.dart';
+import 'screens/Addreservation/AddReservationNext.dart';
 import 'screens/WaitList.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: WaitList(),
+      home: AddReservationNext(),
     );
   }
 }

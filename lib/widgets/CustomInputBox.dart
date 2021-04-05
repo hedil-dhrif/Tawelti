@@ -37,8 +37,6 @@ class _MyCustomInputBoxState extends State<MyCustomInputBox> {
           padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
           child: TextFormField(
             obscureText: widget.label == 'Password' ? true : false,
-            // this can be changed based on usage -
-            // such as - onChanged or onFieldSubmitted
             onChanged: (value) {
               setState(() {
                 isSubmitted = true;
