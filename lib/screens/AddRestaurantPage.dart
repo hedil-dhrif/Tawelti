@@ -13,6 +13,7 @@ class AddRestaurant extends StatelessWidget {
     var scrHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: KBlue,
       body: Stack(
         children: [
           Positioned(
@@ -24,78 +25,13 @@ class AddRestaurant extends StatelessWidget {
               height: MediaQuery.of(context).size.height,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    colorFilter: ColorFilter.mode(
-                        KBlue, BlendMode.dstATop),
                     image: ExactAssetImage('assets/uppernejma.png'),
                     fit: BoxFit.cover),
               ),
-              // child: SingleChildScrollView(
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.center,
-              //     children: [
-              //       // MyCostumTitle(
-              //       //   MyTitle: 'Welcom to \n TAWELTI',
-              //       //   size: 55,
-              //       // ),
-              //       // SizedBox(
-              //       //   height: 10,
-              //       // ),
-              //       MyCustomInputBox(
-              //         label: 'Restaurant Name',
-              //         inputHint: 'John',
-              //         color: KBeige,
-              //       ),
-              //       SizedBox(
-              //         height: 10,
-              //       ),
-              //       //
-              //       MyCustomInputBox(
-              //         label: 'Location',
-              //         inputHint: 'tunis, tunis',
-              //         color: KBeige,
-              //       ),
-              //       //
-              //       SizedBox(
-              //         height: 10,
-              //       ),
-              //       //
-              //       MyCustomInputBox(
-              //         label: 'Phone number',
-              //         inputHint: '22 222 222',
-              //         color: KBeige,
-              //       ),
-              //       //
-              //       SizedBox(
-              //         height: 10,
-              //       ),
-              //       MyCustomInputBox(
-              //         label: 'Web site link',
-              //         inputHint: 'www.restaurant.com',
-              //         color: KBeige,
-              //       ),
-              //       SubmiButton(
-              //         scrWidth: scrWidth,
-              //         scrHeight: scrHeight,
-              //         tap: () {
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => HomePage()));
-              //         },
-              //         title: 'Add Restaurant',
-              //         bcolor: KBeige,
-              //         size: 25,
-              //         color: Color(0xFF333133),
-              //       ),
-              //       //
-              //
-              //     ],
-              //   ),
-              // ),
             ),
           ),
           Positioned(
-            top: 100,
+            top: 120,
             left: 50,
             child: MyCostumTitle(
               MyTitle: 'Welcom to \n TAWELTI',
