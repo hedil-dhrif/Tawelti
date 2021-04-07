@@ -17,9 +17,6 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 15, bottom: 10),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(width: 1.5, color: KBeige)),
-      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

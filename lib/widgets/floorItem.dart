@@ -5,13 +5,16 @@ import 'package:tawelti/screens/Addfloor/FloorDetailsPage.dart';
 
 import '../constants.dart';
 
-
 class FloorItem extends StatefulWidget {
   final String floorname;
   final String zoneNumber;
   final int tableNumber;
 
-  FloorItem({this.floorname,this.tableNumber,this.zoneNumber,});
+  FloorItem({
+    this.floorname,
+    this.tableNumber,
+    this.zoneNumber,
+  });
 
   @override
   _FloorItemState createState() => _FloorItemState();
@@ -23,13 +26,15 @@ class _FloorItemState extends State<FloorItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (BuildContext context) {
-        return FloorDetailsPage();
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return FloorDetailsPage();
+            },
+          ),
+        );
       },
-      ),
-      );},
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -51,13 +56,30 @@ class _FloorItemState extends State<FloorItem> {
                   ),
                 ),
               ),
-              SizedBox(width: 5,),
-              Text(widget.floorname,style: TextStyle(fontSize: 20,),),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                widget.floorname,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
             ],
           ),
-          Text(widget.zoneNumber.toString(),style: TextStyle(fontSize: 20,)),
-          Text(widget.tableNumber.toString(),style: TextStyle(fontSize: 20,)),
-          Icon(Icons.delete_outline,color: Colors.black87,size: 28,)
+          Text(widget.zoneNumber.toString(),
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          Text(widget.tableNumber.toString(),
+              style: TextStyle(
+                fontSize: 20,
+              )),
+          Icon(
+            Icons.delete_outline,
+            color: Colors.black87,
+            size: 28,
+          )
         ],
       ),
     );

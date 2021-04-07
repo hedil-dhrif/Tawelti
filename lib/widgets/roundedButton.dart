@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tawelti/screens/Addfloor/addFloorPage.dart';
-import 'package:tawelti/screens/HomePage.dart';
+import 'package:tawelti/screens/Addreservation/AddReservation.dart';
 
 class RoundedButton extends StatefulWidget {
   final Color color;
@@ -9,8 +9,7 @@ class RoundedButton extends StatefulWidget {
   final double radius;
   final Widget icon;
 
-  RoundedButton(
-      {this.color, this.radius, this.icon});
+  RoundedButton({this.color, this.radius, this.icon});
   @override
   _RoundedButtonState createState() => _RoundedButtonState();
 }
@@ -35,6 +34,7 @@ class _RoundedButtonState extends State<RoundedButton> {
       ),
     );
   }
+
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -42,35 +42,43 @@ class _RoundedButtonState extends State<RoundedButton> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))
-          ),
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
           contentPadding: EdgeInsets.all(0.0),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 TextButton(
-                  child: Text('Add Floor',style: TextStyle(
-                    fontSize: 20,fontWeight: FontWeight.w300,color: Colors.black54
-                  ),),
+                  child: Text(
+                    'Add Floor',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.black54),
+                  ),
                   onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (BuildContext context) {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
                       return AddFloorPage();
-                    })
-                    );
+                    }));
                   },
                 ),
                 Divider(
                   thickness: 1,
                   color: Colors.black54,
-
                 ),
                 TextButton(
-                  child: Text('Add reservation',style: TextStyle(
-                      fontSize: 20,fontWeight: FontWeight.w300,color: Colors.black54
-                  ),),
+                  child: Text(
+                    'Add reservation',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.black54),
+                  ),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
+                          return AddReservation();
+                        }));
                   },
                 ),
                 Divider(
@@ -78,9 +86,13 @@ class _RoundedButtonState extends State<RoundedButton> {
                   color: Colors.black54,
                 ),
                 TextButton(
-                  child: Text('Add event',style: TextStyle(
-                      fontSize: 20,fontWeight: FontWeight.w300,color: Colors.black54
-                  ),),
+                  child: Text(
+                    'Add event',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.black54),
+                  ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

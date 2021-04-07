@@ -6,7 +6,12 @@ import 'package:tawelti/constants.dart';
 import 'package:tawelti/widgets/SubmitButton.dart';
 import 'package:tawelti/screens/HomePage.dart';
 
-class AddRestaurant extends StatelessWidget {
+class AddRestaurant extends StatefulWidget {
+  @override
+  _AddRestaurantState createState() => _AddRestaurantState();
+}
+
+class _AddRestaurantState extends State<AddRestaurant> {
   @override
   Widget build(BuildContext context) {
     var scrWidth = MediaQuery.of(context).size.width;

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tawelti/constants.dart';
+import 'package:tawelti/screens/Addreservation/AddResrvationDetails.dart';
 import 'package:tawelti/screens/HomePage.dart';
 
 class AddReservationNext extends StatefulWidget {
@@ -9,7 +10,7 @@ class AddReservationNext extends StatefulWidget {
 }
 
 class _AddReservationNextState extends State<AddReservationNext> {
-  int _index = 0;
+  //int _index = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +18,7 @@ class _AddReservationNextState extends State<AddReservationNext> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(
-              color: KBlue,
-              size: 30
-          ),
+          iconTheme: IconThemeData(color: KBlue, size: 30),
           backgroundColor: Colors.white,
           title: Center(
             child: Text(
@@ -38,10 +36,8 @@ class _AddReservationNextState extends State<AddReservationNext> {
               padding: const EdgeInsets.only(right: 15),
               child: IconButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
                 },
                 icon: Icon(
                   Icons.close,
@@ -72,11 +68,35 @@ class _AddReservationNextState extends State<AddReservationNext> {
         ),
         body: TabBarView(
           children: [
-            Container(
-              child: Column(
-                children: [
-                  MyStatefulWidget(),
-                ],
+            SingleChildScrollView(
+              child: Container(
+                child: Column(
+                  children: [
+                    MyStatefulWidget(),
+                    SizedBox(height: 20,),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddReservationDetails()));
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
+                        decoration: BoxDecoration(
+                            color: KBeige,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Text(
+                          'Confirm',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             Icon(Icons.directions_bike),
@@ -109,7 +129,6 @@ List<Item> generateItems(int numberOfItems) {
 }
 
 class MyStatefulWidget extends StatefulWidget {
-
   @override
   _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
 }
@@ -141,26 +160,24 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             return ListTile(
               title: Center(
                 child: Text(
-                    item.headerValue,
+                  item.headerValue,
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    letterSpacing: 1
-                  ),
+                      color: Colors.white, fontSize: 25, letterSpacing: 1),
                 ),
               ),
             );
           },
           body: ListTile(
-              title: Text(item.expandedValue),
-              subtitle:
-              const Text('To delete this panel, tap the trash can icon'),
-              trailing: const Icon(Icons.delete),
-              onTap: () {
-                setState(() {
-                  _data.removeWhere((Item currentItem) => item == currentItem);
-                });
-              }),
+            title: Center(
+              child: Text(
+                item.expandedValue,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ),
           isExpanded: item.isExpanded,
         );
       }).toList(),

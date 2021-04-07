@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
-
 class AddPhotos extends StatefulWidget {
   @override
   _AddPhotosState createState() => _AddPhotosState();
@@ -30,6 +29,7 @@ class _AddPhotosState extends State<AddPhotos> {
       }),
     );
   }
+
   Future<void> loadAssets() async {
     List<Asset> resultList = <Asset>[];
     String error = 'No Error Detected';
@@ -62,23 +62,37 @@ class _AddPhotosState extends State<AddPhotos> {
       _error = error;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text('Photos',style: TextStyle(fontSize: 20),),
-            ),
-            ElevatedButton(
-              child: Text("Pick images"),
-              onPressed: loadAssets,
-            ),
-            buildGridView()
-          ],
+    return Scaffold(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  'Photos',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              ElevatedButton(
+                child: Text("Pick images"),
+                onPressed: loadAssets,
+              ),
+              SingleChildScrollView(
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: buildGridView(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

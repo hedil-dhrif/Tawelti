@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:tawelti/screens/Profile/editProfile.dart';
 import 'package:tawelti/widgets/AppBar.dart';
 import 'package:tawelti/widgets/AddButton.dart';
-import 'package:tawelti/widgets/navBar.dart';
 import 'package:tawelti/widgets/navbar2.dart';
 import 'package:tawelti/widgets/roundedButton.dart';
 import '../constants.dart';
@@ -59,8 +57,6 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-
-
         ],
       ),
     );
