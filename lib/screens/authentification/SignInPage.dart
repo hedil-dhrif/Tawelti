@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:tawelti/screens/authentification/GetPassword.dart';
 import 'package:tawelti/widgets/CustomInputBox.dart';
 import 'package:tawelti/widgets/MyCostumTitleWidget.dart';
 import 'package:tawelti/constants.dart';
 import 'package:tawelti/widgets/SubmitButton.dart';
 import 'package:tawelti/screens/AddRestaurantPage.dart';
 
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
+  @override
+  _SignInState createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     var scrWidth = MediaQuery.of(context).size.width;
@@ -34,25 +40,32 @@ class SignIn extends StatelessWidget {
                     MyTitle: 'Sign In',
                     size: 60,
                   ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  //
                   MyCustomInputBox(
                     label: 'Name',
                     inputHint: 'John',
                     color: KBlue,
                   ),
-                  //
-                  SizedBox(
-                    height: 15,
-                  ),
-                  //
                   MyCustomInputBox(
                     label: 'Password',
                     inputHint: '8+ Characters,1 Capital letter',
                     color: KBlue,
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GetPassword()));
+                    },
+                    child: Text(
+                      'forgot my password',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: KBlue,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.15,),
                   SubmiButton(
                     scrWidth: scrWidth,
                     scrHeight: scrHeight,

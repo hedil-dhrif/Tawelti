@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tawelti/widgets/CustomInputBox.dart';
 import 'package:tawelti/widgets/MyCostumTitleWidget.dart';
 import 'package:tawelti/constants.dart';
-import 'package:tawelti/screens/SignInPage.dart';
+import 'file:///C:/Users/ASUSI7/AndroidStudioProjects/tawelti/lib/screens/authentification/SignInPage.dart';
 import 'package:tawelti/screens/AddRestaurantPage.dart';
 import 'package:tawelti/widgets/SubmitButton.dart';
 

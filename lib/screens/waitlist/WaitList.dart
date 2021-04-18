@@ -29,8 +29,11 @@ class _WaitListState extends State<WaitList> {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
+          iconTheme: IconThemeData(
+            color: KBlue,
+          ),
           title: AppBarWidget(
-            title: 'Restaurant Name',
+            title: 'Wait list',
             icon: Icons.close,
             onpressed: () {},
           )),

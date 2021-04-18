@@ -16,31 +16,33 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: KBlue,
+        ),
         backgroundColor: Colors.white,
         title: AppBarWidget(
-          title: 'Add to wait list',
-          icon: Icons.close,
-          onpressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => HomePage()));
-          },
+          title: 'Restaurant name',
+          icon: Icons.menu,
+          onpressed: () {},
         ),
       ),
-      bottomNavigationBar: BottomNavBarV2(bgColor: KBlue,
+      bottomNavigationBar: BottomNavBarV2(
+        bgColor: KBlue,
         activeIconColor: Colors.white,
         deactiveIconColor: Colors.grey[300],
         syncButton: RoundedButton(
-         radius: 60,
+          radius: 60,
           color: KBeige,
           // press: () => Navigator.push(context,
           //     MaterialPageRoute(builder: (context) => StatsPage())),
-          icon:   SvgPicture.asset(
+          icon: SvgPicture.asset(
             'assets/plus.svg',
             color: Colors.white,
-            height:32,
+            height: 32,
             width: 32,
           ),
-        ),),
+        ),
+      ),
       body: Column(
         children: [
           SizedBox(
@@ -51,7 +53,12 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(25.0),
-                  child: Text('Manage your \n   floor plan',style: TextStyle(fontSize: 20,),),
+                  child: Text(
+                    'Manage your \n   floor plan',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
                 ),
                 AddButton(),
               ],

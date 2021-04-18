@@ -17,14 +17,12 @@ class _AddPhotosState extends State<AddPhotos> {
   }
 
   Widget buildGridView() {
-    return GridView.count(
-      crossAxisCount: 3,
+    return ListView(
+      scrollDirection: Axis.horizontal,
       children: List.generate(images.length, (index) {
         Asset asset = images[index];
         return AssetThumb(
           asset: asset,
-          width: 300,
-          height: 300,
         );
       }),
     );
@@ -36,13 +34,13 @@ class _AddPhotosState extends State<AddPhotos> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 300,
+        maxImages: 30,
         enableCamera: true,
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
         materialOptions: MaterialOptions(
           actionBarColor: "#abcdef",
-          actionBarTitle: "Example App",
+          actionBarTitle: "Add images",
           allViewTitle: "All Photos",
           useDetailsView: false,
           selectCircleStrokeColor: "#000000",
@@ -62,38 +60,24 @@ class _AddPhotosState extends State<AddPhotos> {
       _error = error;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(
-                  'Photos',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-              ElevatedButton(
-                child: Text("Pick images"),
-                onPressed: loadAssets,
-              ),
-              SingleChildScrollView(
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: buildGridView(),
-                ),
-              ),
-            ],
+      body: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: 20),
+            child: ElevatedButton(
+              child: Text("Pick images"),
+              onPressed: loadAssets,
+            ),
           ),
-        ),
+          Container(
+            height: MediaQuery.of(context).size.height*0.2,
+            width: MediaQuery.of(context).size.width,
+            child: buildGridView(),
+          ),
+        ],
       ),
     );
   }
