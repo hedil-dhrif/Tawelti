@@ -17,53 +17,57 @@ class _AddReservationNextState extends State<AddReservationNext> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: KBlue, size: 30),
-          backgroundColor: Colors.white,
-          title: Center(
-            child: Text(
-              'Add Reservation',
-              style: TextStyle(
-                  fontSize: 25,
-                  color: KBlue,
-                  fontFamily: 'ProductSans',
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.w100),
-            ),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
-                },
-                icon: Icon(
-                  Icons.close,
-                  size: 30,
-                  color: KBlue,
-                ),
+        appBar: PreferredSize(
+          preferredSize: Size(MediaQuery.of(context).size.width,
+              MediaQuery.of(context).size.height * 0.15),
+          child: AppBar(
+            iconTheme: IconThemeData(color: KBlue, size: 30),
+            backgroundColor: Colors.white,
+            title: Center(
+              child: Text(
+                'Add Reservation',
+                style: TextStyle(
+                    fontSize: 25,
+                    color: KBlue,
+                    fontFamily: 'ProductSans',
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.w300),
               ),
             ),
-          ],
-          bottom: TabBar(
-            tabs: [
-              Tab(
-                icon: Icon(
-                  Icons.menu,
-                  color: KBeige,
-                  size: 30,
-                ),
-              ),
-              Tab(
-                icon: Icon(
-                  Icons.grid_view,
-                  color: KBeige,
-                  size: 30,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
+                  },
+                  icon: Icon(
+                    Icons.close,
+                    size: 30,
+                    color: KBlue,
+                  ),
                 ),
               ),
             ],
+            bottom: TabBar(
+              tabs: [
+                Tab(
+                  icon: Icon(
+                    CupertinoIcons.bars,
+                    color: KBeige,
+                    size: 30,
+                  ),
+                ),
+                Tab(
+                  icon: Icon(
+                    CupertinoIcons.rectangle_3_offgrid,
+                    color: KBeige,
+                    size: 30,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         body: TabBarView(
@@ -82,16 +86,20 @@ class _AddReservationNextState extends State<AddReservationNext> {
                                 builder: (context) => AddReservationDetails()));
                       },
                       child: Container(
+                        height: MediaQuery.of(context).size.height*0.07,
+                        width: MediaQuery.of(context).size.width*0.4,
                         padding: EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20),
                         decoration: BoxDecoration(
                             color: KBeige,
                             borderRadius: BorderRadius.circular(10)),
-                        child: Text(
-                          'Confirm',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,),
+                        child: Center(
+                          child: Text(
+                            'Confirm',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,),
+                          ),
                         ),
                       ),
                     ),
@@ -162,7 +170,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 child: Text(
                   item.headerValue,
                   style: TextStyle(
-                      color: Colors.white, fontSize: 25, letterSpacing: 1),
+                      color: Colors.white, fontSize: 20, letterSpacing: 1),
                 ),
               ),
             );

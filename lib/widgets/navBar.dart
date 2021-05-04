@@ -1,96 +1,105 @@
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:tawelti/constants.dart';
+import 'package:tawelti/widgets/roundedButton.dart';
+import 'clipPath.dart';
 
 
+enum TabItem { red, green, blue }
 
-void main() => runApp(MaterialApp(home: BottomNavBar()));
+Map<TabItem, String> tabName = {
+  TabItem.red: 'red',
+  TabItem.green: 'green',
+  TabItem.blue: 'blue',
+};
 
-class BottomNavBar extends StatefulWidget {
+Map<TabItem, MaterialColor> activeTabColor = {
+  TabItem.red: Colors.red,
+  TabItem.green: Colors.green,
+  TabItem.blue: Colors.blue,
+};
+class BottomNavBarV2 extends StatefulWidget {
+  final TabItem currentTab;
+  final ValueChanged<TabItem> onSelectTab;
+  final bgColor;
+  final Color activeIconColor;
+  final Color deactiveIconColor;
+  final RoundedButton syncButton;
+  BottomNavBarV2(
+      {this.bgColor,
+        this.currentTab, this.onSelectTab,
+        this.activeIconColor,
+        this.deactiveIconColor,
+        this.syncButton});
   @override
-  _BottomNavBarState createState() => _BottomNavBarState();
+  _BottomNavBarV2State createState() => _BottomNavBarV2State();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> {
-  GlobalKey _bottomNavigationKey = GlobalKey();
+class _BottomNavBarV2State extends State<BottomNavBarV2> {
+  int currentIndex = 0;
+
+  setBottomBarIndex(index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: CurvedNavigationBar(
-          key: _bottomNavigationKey,
-          index: 0,
-          height: 50.0,
-          items: <Widget>[
-            SvgPicture.asset(
-                'assets/floor-plan.svg',
-                color: Colors.white,
-              height: 32,
-              width: 32,
-            ),
-            SvgPicture.asset(
-              'assets/calendar-multiselect.svg',
-              color: Colors.white,
-              height: 32,
-              width: 32,
-            ),
-            SvgPicture.asset(
-              'assets/plus.svg',
-              color: Colors.white,
-              height: 32,
-              width: 32,
-            ),
-            SvgPicture.asset(
-              'assets/cog-outline.svg',
-              color: Colors.white,
-              height: 32,
-              width: 32,
-            ),
-            SvgPicture.asset(
-              'assets/calendar-star.svg',
-              color: Colors.white,
-              height: 30,
-              width: 30,
-            ),
-          ],
-          color: KBlue,
-          buttonBackgroundColor:KBeige ,
-          backgroundColor: KBackgroundColor,
-          animationCurve: Curves.easeInOut,
-          animationDuration: Duration(milliseconds: 600),
-          letIndexChange: (index) => true,
-        ),
-        );
-  }
+    final Size size = MediaQuery.of(context).size;
+    return Stack(
+      children: [
+        Container(
+          width: size.width,
+          height: 60,
+          child: Stack(
+            overflow: Overflow.visible,
+            children: [
+              CustomPaint(
+                size: Size(size.width, 80),
+                painter: BNBCustomPainter(bgColor: widget.bgColor),
+              ),
+              widget.syncButton,
+              Container(
+                width: size.width,
+                //height: 60,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/floor-plan.svg',
+                      color: Colors.white,
+                      height: 32,
+                      width: 32,
+                    ),
+                    SvgPicture.asset(
+                      'assets/calendar-multiselect.svg',
+                      color: Colors.white,
+                      height: 32,
+                      width: 32,
+                    ),
+                    Container(
+                      width: size.width * 0.20,
+                    ),
+                    SvgPicture.asset(
+                      'assets/cog-outline.svg',
+                      color: Colors.white,
+                      height: 32,
+                      width: 32,
+                    ),
+                    SvgPicture.asset(
+                      'assets/calendar-star.svg',
+                      color: Colors.white,
+                      height: 32,
+                      width: 32,
+                    ),
 
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('AlertDialog Title'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('This is a demo alert dialog.'),
-                Text('Would you like to approve of this message?'),
-              ],
-            ),
+                  ],
+                ),
+              )
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Approve'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+        )
+      ],
     );
   }
 }
-
-

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tawelti/screens/Addfloor/addFloorPage.dart';
 import 'package:tawelti/screens/Addreservation/AddReservation.dart';
+import 'package:tawelti/screens/event/AddEvent.dart';
+import 'package:tawelti/screens/event/DetailsEvent.dart';
 
 class RoundedButton extends StatefulWidget {
   final Color color;
@@ -20,7 +22,6 @@ class _RoundedButtonState extends State<RoundedButton> {
     return Center(
       heightFactor: 0.4,
       child: FlatButton(
-        onPressed: _showMyDialog,
         child: Container(
           //color: Colors.white,
           // height: widget.height,
@@ -35,73 +36,6 @@ class _RoundedButtonState extends State<RoundedButton> {
     );
   }
 
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          contentPadding: EdgeInsets.all(0.0),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                TextButton(
-                  child: Text(
-                    'Add Floor',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.black54),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (BuildContext context) {
-                      return AddFloorPage();
-                    }));
-                  },
-                ),
-                Divider(
-                  thickness: 1,
-                  color: Colors.black54,
-                ),
-                TextButton(
-                  child: Text(
-                    'Add reservation',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.black54),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (BuildContext context) {
-                          return AddReservation();
-                        }));
-                  },
-                ),
-                Divider(
-                  thickness: 1,
-                  color: Colors.black54,
-                ),
-                TextButton(
-                  child: Text(
-                    'Add event',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.black54),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+
+
 }

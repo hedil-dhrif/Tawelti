@@ -1,105 +1,79 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:tawelti/widgets/roundedButton.dart';
-import 'clipPath.dart';
+import 'package:tawelti/constants.dart';
 
+class CustomBottomNavigationBar extends StatefulWidget {
+  final int defaultSelectedIndex;
+  final Function(int) onChange;
+  final List<IconData> iconList;
 
-enum TabItem { red, green, blue }
+  CustomBottomNavigationBar(
+      {this.defaultSelectedIndex = 0,
+        @required this.iconList,
+        @required this.onChange});
 
-Map<TabItem, String> tabName = {
-  TabItem.red: 'red',
-  TabItem.green: 'green',
-  TabItem.blue: 'blue',
-};
-
-Map<TabItem, MaterialColor> activeTabColor = {
-  TabItem.red: Colors.red,
-  TabItem.green: Colors.green,
-  TabItem.blue: Colors.blue,
-};
-class BottomNavBarV2 extends StatefulWidget {
-  final TabItem currentTab;
-  final ValueChanged<TabItem> onSelectTab;
-  final bgColor;
-  final Color activeIconColor;
-  final Color deactiveIconColor;
-  final RoundedButton syncButton;
-  BottomNavBarV2(
-      {this.bgColor,
-        this.currentTab, this.onSelectTab,
-        this.activeIconColor,
-        this.deactiveIconColor,
-        this.syncButton});
   @override
-  _BottomNavBarV2State createState() => _BottomNavBarV2State();
+  _CustomBottomNavigationBarState createState() =>
+      _CustomBottomNavigationBarState();
 }
 
-class _BottomNavBarV2State extends State<BottomNavBarV2> {
-  int currentIndex = 0;
+class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
+  int _selectedIndex = 0;
+  List<IconData> _iconList = [];
 
-  setBottomBarIndex(index) {
-    setState(() {
-      currentIndex = index;
-    });
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _selectedIndex = widget.defaultSelectedIndex;
+    _iconList = widget.iconList;
   }
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    return Stack(
-      children: [
-        Container(
-          width: size.width,
-          height: 60,
-          child: Stack(
-            overflow: Overflow.visible,
-            children: [
-              CustomPaint(
-                size: Size(size.width, 80),
-                painter: BNBCustomPainter(bgColor: widget.bgColor),
-              ),
-              widget.syncButton,
-              Container(
-                width: size.width,
-                //height: 60,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/floor-plan.svg',
-                      color: Colors.white,
-                      height: 32,
-                      width: 32,
-                    ),
-                    SvgPicture.asset(
-                      'assets/calendar-multiselect.svg',
-                      color: Colors.white,
-                      height: 32,
-                      width: 32,
-                    ),
-                    Container(
-                      width: size.width * 0.20,
-                    ),
-                  SvgPicture.asset(
-                    'assets/cog-outline.svg',
-                    color: Colors.white,
-                    height: 32,
-                    width: 32,
-                  ),
-                  SvgPicture.asset(
-                    'assets/calendar-star.svg',
-                    color: Colors.white,
-                    height: 32,
-                    width: 32,
-                  ),
+    List<Widget> _navBarItemList = [];
 
-                  ],
-                ),
-              )
-            ],
-          ),
+    for (var i = 0; i < _iconList.length; i++) {
+      _navBarItemList.add(buildNavBarItem(_iconList[i], i));
+    }
+
+    return Container(
+      color: Color(0xffFEFEFE),
+      child: Row(
+        children: _navBarItemList,
+      ),
+    );
+  }
+
+  Widget buildNavBarItem(IconData icon, int index) {
+    return GestureDetector(
+      onTap: () {
+        widget.onChange(index);
+        setState(() {
+          _selectedIndex = index;
+        });
+      },
+      child: Container(
+        height: 60,
+        width: MediaQuery.of(context).size.width / _iconList.length,
+        decoration: index == _selectedIndex
+            ? BoxDecoration(
+            // border: Border(
+            //   bottom: BorderSide(width: 4, color: Colors.green),
+            // ),
+            // gradient: LinearGradient(colors: [
+            //   Colors.green.withOpacity(0.3),
+            //   Colors.green.withOpacity(0.015),
+            // ], begin: Alignment.bottomCenter, end: Alignment.topCenter)
+          // color: index == _selectedItemIndex ? Colors.green : Colors.white,
         )
-      ],
+            : BoxDecoration(),
+        child: Icon(
+          icon,
+          size: 30,
+          color: index == _selectedIndex ? KBeige : KBlue,
+        ),
+      ),
     );
   }
 }

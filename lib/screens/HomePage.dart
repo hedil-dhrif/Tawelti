@@ -1,7 +1,11 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:tawelti/screens/dashboard.dart';
 import 'package:tawelti/widgets/AppBar.dart';
 import 'package:tawelti/widgets/AddButton.dart';
+import 'package:tawelti/widgets/navBar.dart';
 import 'package:tawelti/widgets/navbar2.dart';
 import 'package:tawelti/widgets/roundedButton.dart';
 import '../constants.dart';
@@ -12,59 +16,38 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: KBlue,
-        ),
-        backgroundColor: Colors.white,
-        title: AppBarWidget(
-          title: 'Restaurant name',
-          icon: Icons.menu,
-          onpressed: () {},
-        ),
-      ),
-      bottomNavigationBar: BottomNavBarV2(
-        bgColor: KBlue,
-        activeIconColor: Colors.white,
-        deactiveIconColor: Colors.grey[300],
-        syncButton: RoundedButton(
-          radius: 60,
-          color: KBeige,
-          // press: () => Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => StatsPage())),
-          icon: SvgPicture.asset(
-            'assets/plus.svg',
-            color: Colors.white,
-            height: 32,
-            width: 32,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: AppBar(
+          elevation: 0,
+          backgroundColor: Color(0xf6f6f6),
+          iconTheme: IconThemeData(
+            color: KBlue,
           ),
-        ),
-      ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 150,
+          leading:Icon(CupertinoIcons.arrow_left),
+          title: Text('Floor Plan',          style: TextStyle(color: Colors.black87, fontSize: 24),
           ),
-          Center(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: Text(
-                    'Manage your \n   floor plan',
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-                AddButton(),
-              ],
+          bottom: PreferredSize(
+            preferredSize: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height * 0.08),
+            child: Divider(
+              thickness: 2,
+              color: KBeige,
             ),
           ),
-        ],
+        ),
+      ),
+
+      body: Center(
+        child: Center(
+          child: AddButton(),
+        )
       ),
     );
   }

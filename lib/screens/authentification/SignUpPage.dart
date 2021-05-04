@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tawelti/widgets/CustomInputBox.dart';
 import 'package:tawelti/widgets/MyCostumTitleWidget.dart';
 import 'package:tawelti/constants.dart';
-import 'file:///C:/Users/ASUSI7/AndroidStudioProjects/tawelti/lib/screens/authentification/SignInPage.dart';
+//import 'file:///C:/Users/ASUSI7/AndroidStudioProjects/tawelti/lib/screens/authentification/SignInPage.dart';
 import 'package:tawelti/screens/AddRestaurantPage.dart';
 import 'package:tawelti/widgets/SubmitButton.dart';
 
@@ -111,12 +111,12 @@ class SignUpPage extends StatelessWidget {
                         color: Colors.white70,
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignIn()));
-                      },
+                      // onTap: () {
+                      //   Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) => SignIn()));
+                      // },
                       child: RichText(
                         text: TextSpan(
                           children: [

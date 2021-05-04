@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tawelti/constants.dart';
+import 'package:tawelti/screens/Addreservation/AddReservation.dart';
 import 'package:tawelti/widgets/AppBar.dart';
 import 'package:tawelti/widgets/CustomInputBox.dart';
 import 'package:tawelti/widgets/SubmitButton.dart';
@@ -14,42 +16,55 @@ class _AddReservationDetailsState extends State<AddReservationDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(
-          color: KBlue,
-        ),
-        title: AppBarWidget(
-          title: 'Add reservation',
-          icon: Icons.close,
-          onpressed: () {},
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: AppBar(
+          elevation: 0,
+          backgroundColor: Color(0xf6f6f6),
+          iconTheme: IconThemeData(
+            color: KBlue,
+          ),
+          leading: Icon(CupertinoIcons.arrow_left),
+          title: Text(
+            'Add Reservation',
+            style: TextStyle(
+                fontSize: 25,
+                color: KBlue,
+                fontFamily: 'ProductSans',
+                letterSpacing: 1,
+                fontWeight: FontWeight.w100),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height * 0.08),
+            child: Divider(
+              thickness: 2,
+              color: KBeige,
+            ),
+          ),
         ),
       ),
       body: Container(
-        padding: EdgeInsets.only(top: 50),
+        padding: EdgeInsets.only(top: 10),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Text('Guest credentials',style: TextStyle(
+                  fontSize: 25,
+                  color: KBlue,
+                  //fontFamily: 'ProductSans',
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.w300)),
+              SizedBox(height: 20,),
               MyCustomInputBox(
-                label: 'Restaurant Name',
+                label: 'Guest name',
                 inputHint: 'John',
                 color: KBeige,
               ),
               SizedBox(
                 height: 10,
               ),
-              //
-              MyCustomInputBox(
-                label: 'Location',
-                inputHint: 'tunis, tunis',
-                color: KBeige,
-              ),
-              //
-              SizedBox(
-                height: 10,
-              ),
-              //
               MyCustomInputBox(
                 label: 'Phone number',
                 inputHint: '22 222 222',
@@ -60,21 +75,26 @@ class _AddReservationDetailsState extends State<AddReservationDetails> {
                 height: 10,
               ),
               MyCustomInputBox(
-                label: 'Web site link',
-                inputHint: 'www.restaurant.com',
+                label: 'email',
+                inputHint: 'guest@gmail.com',
+                color: KBeige,
+              ),
+              MyCustomInputBox(
+                label: 'special request',
+                inputHint: 'special request',
                 color: KBeige,
               ),
               SubmiButton(
                 scrWidth: MediaQuery.of(context).size.width,
                 scrHeight: MediaQuery.of(context).size.height,
                 tap: () {
-                  /*Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));*/
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AddReservation()));
                 },
-                title: 'Add Restaurant',
-                bcolor: KBeige,
+                title: 'Add Reservation',
+                bcolor: KBlue,
                 size: 25,
-                color: Color(0xFF333133),
+                color: Colors.white,
               ),
             ],
           ),

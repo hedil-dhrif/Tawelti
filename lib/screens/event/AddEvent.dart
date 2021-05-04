@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tawelti/constants.dart';
 import 'package:tawelti/widgets/AppBar.dart';
@@ -32,15 +33,32 @@ class _AddEventState extends State<AddEvent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(
-          color: KBlue,
-        ),
-        title: AppBarWidget(
-          title: 'Add event',
-          icon: Icons.close,
-          onpressed: () {},
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: AppBar(
+          elevation: 0,
+          backgroundColor: Color(0xf6f6f6),
+          iconTheme: IconThemeData(
+            color: KBlue,
+          ),
+          leading: Icon(CupertinoIcons.arrow_left),
+          title: Text(
+            'Add Event',
+            style: TextStyle(
+                fontSize: 25,
+                color: KBlue,
+                fontFamily: 'ProductSans',
+                letterSpacing: 1,
+                fontWeight: FontWeight.w100),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height * 0.08),
+            child: Divider(
+              thickness: 2,
+              color: KBeige,
+            ),
+          ),
         ),
       ),
       body: SingleChildScrollView(

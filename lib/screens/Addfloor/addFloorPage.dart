@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tawelti/widgets/AppBar.dart';
 import 'package:tawelti/widgets/ListHeaders.dart';
+import 'package:tawelti/widgets/floorItem.dart';
 import 'package:tawelti/widgets/list.dart';
 
 import '../../constants.dart';
@@ -30,78 +31,84 @@ class _AddFloorPageState extends State<AddFloorPage> {
     super.dispose();
   }
 
+  int _selectedIndex = 0;
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  List<Widget> _widgetOptions = <Widget>[];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(
-          color: KBlue,
-        ),
-        title: AppBarWidget(
-          title: 'Add floor plan',
-          icon: Icons.close,
-          onpressed: () {
-            Navigator.pop(context);
-          },
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: AppBar(
+          elevation: 0,
+          backgroundColor: Color(0xf6f6f6),
+          iconTheme: IconThemeData(
+            color: KBlue,
+          ),
+          leading:Icon(CupertinoIcons.arrow_left),
+          title: Text('Floor Plan',          style: TextStyle(color: Colors.black87, fontSize: 24),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height * 0.08),
+            child: Divider(
+              thickness: 2,
+              color: KBeige,
+            ),
+          ),
         ),
       ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 80, left: 20, right: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Floor Plan \n',
+                  'Add new Floor',
                   style: TextStyle(
-                    fontSize: 25,
-                    color: KBlue,
+                    fontSize: 24,
+                    color: Colors.black87,
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Add new Floor',
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.black87,
-                      ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _showMyDialog();
+                    });
+                  },
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    child: Icon(
+                      Icons.add,
+                      color: KBeige,
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _showMyDialog();
-                        });
-                      },
-                      child: Container(
-                        height: 30,
-                        width: 30,
-                        child: Icon(
-                          Icons.add,
-                          color: KBeige,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: KBeige),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: KBeige),
+                      borderRadius: BorderRadius.circular(3),
                     ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ListHeaders(),
+                  ),
                 ),
               ],
             ),
-          ),
-          Container(
-              margin: EdgeInsets.only(top: 220, left: 20, right: 20),
-              child: listFloor()),
-        ],
+            ListHeaders(),
+            Container(
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: _buildFloorList()),
+          ],
+        ),
       ),
     );
   }
@@ -160,12 +167,12 @@ class _AddFloorPageState extends State<AddFloorPage> {
             ),
           ),
           actions: [
-            ElevatedButton(
+            FlatButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
               child: Container(
-                height: 40,
+                height: 60,
                 width: 240,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
@@ -179,7 +186,7 @@ class _AddFloorPageState extends State<AddFloorPage> {
                       children: [
                         Text(
                           'Add floor',
-                          style: TextStyle(fontSize: 15, color: Colors.white),
+                          style: TextStyle(fontSize: 20, color: Colors.white),
                         )
                       ],
                     ),
@@ -192,4 +199,19 @@ class _AddFloorPageState extends State<AddFloorPage> {
       },
     );
   }
+
+  _buildFloorList() {
+    return Container(
+      child: ListView.separated(
+        itemCount: 3,
+        itemBuilder: (BuildContext context, int index) {
+          return FloorItem(floorname: 'ghj', zoneNumber: '3', tableNumber: 0);
+        },
+        separatorBuilder: (BuildContext context, int index) => const Divider(
+          color: Colors.black87,
+        ),
+      ),
+    );
+  }
 }
+

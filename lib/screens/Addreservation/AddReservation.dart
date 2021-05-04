@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tawelti/widgets/AppBar.dart';
 import 'package:tawelti/constants.dart';
@@ -36,26 +37,44 @@ class _AddReservationState extends State<AddReservation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: KBlue,
-        ),
-        backgroundColor: Colors.white,
-        title: AppBarWidget(
-          title: 'Add Reservation',
-          icon: Icons.close,
-          onpressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => HomePage()));
-          },
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: AppBar(
+          elevation: 0,
+          backgroundColor: Color(0xf6f6f6),
+          iconTheme: IconThemeData(
+            color: KBlue,
+          ),
+          leading: Icon(CupertinoIcons.arrow_left),
+          title: Text(
+            'Add Reservation',
+            style: TextStyle(
+                fontSize: 25,
+                color: KBlue,
+                fontFamily: 'ProductSans',
+                letterSpacing: 1,
+                fontWeight: FontWeight.w100),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height * 0.08),
+            child: Divider(
+              thickness: 2,
+              color: KBeige,
+            ),
+          ),
         ),
       ),
-      body: Stack(
+      body: Column(
+        //crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
+          SizedBox(
+            height: 30,
+          ),
           Center(
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.7,
-              padding: EdgeInsets.only(top: 80),
+              width: MediaQuery.of(context).size.width * 0.9,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,15 +82,15 @@ class _AddReservationState extends State<AddReservation> {
                   Text(
                     'Guest number :',
                     style: TextStyle(
-                      fontSize: 25,
+                      fontSize: 20,
                       color: KBlue,
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: KBlue),
                       borderRadius: BorderRadius.circular(10),
@@ -82,7 +101,7 @@ class _AddReservationState extends State<AddReservation> {
                         Text(
                           '$_counter',
                           style: TextStyle(
-                            fontSize: 30,
+                            fontSize: 20,
                           ),
                         ),
                         Column(
@@ -112,14 +131,14 @@ class _AddReservationState extends State<AddReservation> {
                     height: 20,
                   ),
                   Text(
-                    'Pick a date :',
+                    'Pick a date ',
                     style: TextStyle(
-                      fontSize: 25,
+                      fontSize: 20,
                       color: KBlue,
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -147,8 +166,9 @@ class _AddReservationState extends State<AddReservation> {
                           onTap: () {
                             showDatePicker(
                               context: context,
-                              initialDate:
-                                  _datetime == null ? DateTime.now() : _datetime,
+                              initialDate: _datetime == null
+                                  ? DateTime.now()
+                                  : _datetime,
                               initialDatePickerMode: DatePickerMode.day,
                               firstDate: DateTime(2021),
                               lastDate: DateTime(2040),
@@ -166,14 +186,14 @@ class _AddReservationState extends State<AddReservation> {
                     height: 20,
                   ),
                   Text(
-                    'Floor :',
+                    'Floor ',
                     style: TextStyle(
-                      fontSize: 25,
+                      fontSize: 20,
                       color: KBlue,
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -228,20 +248,21 @@ class _AddReservationState extends State<AddReservation> {
                         width: MediaQuery.of(context).size.width * 0.35,
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                            color: KBlue, borderRadius: BorderRadius.circular(10)),
+                            color: KBlue,
+                            borderRadius: BorderRadius.circular(10)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               'Next',
                               style: TextStyle(
-                                  fontSize: 30,
+                                  fontSize: 20,
                                   color: KBackgroundColor,
                                   letterSpacing: 2),
                             ),
                             Icon(
                               Icons.arrow_forward,
-                              size: 30,
+                              size: 24,
                               color: KBackgroundColor,
                             )
                           ],

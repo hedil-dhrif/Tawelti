@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tawelti/api/api.dart';
 import 'package:tawelti/screens/authentification/GetPassword.dart';
 import 'package:tawelti/widgets/CustomInputBox.dart';
 import 'package:tawelti/widgets/MyCostumTitleWidget.dart';
@@ -12,6 +16,24 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  bool _isLoading = false;
+
+
+  TextEditingController mailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  ScaffoldState scaffoldState;
+  _showMsg(msg) { //
+    final snackBar = SnackBar(
+      content: Text(msg),
+      action: SnackBarAction(
+        label: 'Close',
+        onPressed: () {
+          // Some code to undo the change!
+        },
+      ),
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
   @override
   Widget build(BuildContext context) {
     var scrWidth = MediaQuery.of(context).size.width;
@@ -41,14 +63,16 @@ class _SignInState extends State<SignIn> {
                     size: 60,
                   ),
                   MyCustomInputBox(
-                    label: 'Name',
+                    label: 'email',
                     inputHint: 'John',
                     color: KBlue,
+                    controller: mailController,
                   ),
                   MyCustomInputBox(
                     label: 'Password',
                     inputHint: '8+ Characters,1 Capital letter',
                     color: KBlue,
+                    controller: passwordController,
                   ),
                   GestureDetector(
                     onTap: () {
@@ -69,12 +93,9 @@ class _SignInState extends State<SignIn> {
                   SubmiButton(
                     scrWidth: scrWidth,
                     scrHeight: scrHeight,
-                    tap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddRestaurant()));
-                    },
+                    tap:
+                       _isLoading ? null : _login,
+
                     title: 'Create Account',
                     bcolor: KBlue,
                     size: 20,
@@ -87,5 +108,38 @@ class _SignInState extends State<SignIn> {
         ),
       ),
     );
+  }
+
+  void _login() async{
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    var data = {
+      'email' : mailController.text,
+      'password' : passwordController.text
+    };
+
+    var res = await CallApi().postData(data, 'users/login');
+    var body = json.decode(res.body);
+    //if(body['status_code']==200){
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('token', body['token']);
+      print(body);
+      localStorage.setString('user', json.encode(body['user']));
+      Navigator.push(
+          context,
+          new MaterialPageRoute(
+              builder: (context) => AddRestaurant()));
+    // }else{
+    //   print('error');
+    // }
+
+
+    setState(() {
+      _isLoading = false;
+    });
+
   }
 }

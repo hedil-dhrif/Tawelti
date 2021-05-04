@@ -34,7 +34,6 @@ class _WaitListState extends State<WaitList> {
           ),
           title: AppBarWidget(
             title: 'Wait list',
-            icon: Icons.close,
             onpressed: () {},
           )),
       body: Container(

@@ -81,7 +81,6 @@ class _AddWaitListState extends State<AddWaitList> {
         backgroundColor: Colors.white,
         title: AppBarWidget(
           title: 'Add to wait list',
-          icon: Icons.close,
           onpressed: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => HomePage()));

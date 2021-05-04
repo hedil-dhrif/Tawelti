@@ -1,7 +1,9 @@
 import 'package:custom_switch_button/custom_switch_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:tawelti/screens/Profile/profilePage.dart';
+import 'package:tawelti/widgets/AppBar.dart';
 import 'package:tawelti/widgets/CuisineItem.dart';
 import 'package:tawelti/widgets/DescriptionInput.dart';
 import 'package:tawelti/widgets/InputText.dart';
@@ -19,10 +21,27 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   bool isChecked = false;
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: AppBarWidget(
+          leading: GestureDetector(
+            onTap: (){
+              Navigator.of(context).pop();
+            },
+              child: Icon(CupertinoIcons.arrow_left)),
+          title: 'Restaurant name',
+          onpressed: () {
+            _scaffoldKey.currentState.openEndDrawer();
+          },
+        ),
+      ),
       body: Container(
         child: ListView(
           children: [

@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tawelti/constants.dart';
+import 'package:tawelti/screens/event/AddEvent.dart';
 import 'package:tawelti/widgets/AppBar.dart';
 
 import 'Event.dart';
@@ -27,16 +29,32 @@ class _DetailsEventState extends State<DetailsEvent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: KBlue,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(
-          color: KBlue,
-        ),
-        title: AppBarWidget(
-          title: 'Add event',
-          icon: Icons.close,
-          onpressed: () {},
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: AppBar(
+          elevation: 0,
+          backgroundColor: Color(0xf6f6f6),
+          iconTheme: IconThemeData(
+            color: KBlue,
+          ),
+          leading: Icon(CupertinoIcons.arrow_left),
+          title: Text(
+            'Add Reservation',
+            style: TextStyle(
+                fontSize: 25,
+                color: KBlue,
+                fontFamily: 'ProductSans',
+                letterSpacing: 1,
+                fontWeight: FontWeight.w100),
+          ),
+          bottom: PreferredSize(
+            preferredSize: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height * 0.08),
+            child: Divider(
+              thickness: 2,
+              color: KBeige,
+            ),
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -116,7 +134,7 @@ class _DetailsEventState extends State<DetailsEvent> {
         backgroundColor: KBeige,
         child: Icon(Icons.add),
         onPressed:(){
-           Navigator.pushNamed(context, 'add_event');
+           Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEvent()));
         },
       ),
     );

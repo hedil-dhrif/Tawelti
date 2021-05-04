@@ -5,8 +5,9 @@ class MyCustomInputBox extends StatefulWidget {
   String label;
   String inputHint;
   Color color;
+   TextEditingController controller;
 
-  MyCustomInputBox({this.label, this.inputHint, this.color});
+  MyCustomInputBox({this.label, this.inputHint, this.color,this.controller});
   @override
   _MyCustomInputBoxState createState() => _MyCustomInputBoxState();
 }
@@ -36,6 +37,7 @@ class _MyCustomInputBoxState extends State<MyCustomInputBox> {
         Padding(
           padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
           child: TextFormField(
+            controller: widget.controller,
             obscureText: widget.label == 'Password' ? true : false,
             onChanged: (value) {
               setState(() {
