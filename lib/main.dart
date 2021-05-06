@@ -5,6 +5,8 @@ import 'package:tawelti/screens/Addfloor/wrapList.dart';
 import 'package:tawelti/screens/Addfloor/zonePlan.dart';
 import 'package:tawelti/screens/authentification/SignInPage.dart';
 import 'package:tawelti/screens/dashboard.dart';
+import 'package:tawelti/screens/event/DetailsEvent.dart';
+import 'package:tawelti/screens/event/EventList.dart';
 import 'screens/HomePage.dart';
 
 void main() {
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SignIn(),
+      home: Test(),
     );
   }
 }

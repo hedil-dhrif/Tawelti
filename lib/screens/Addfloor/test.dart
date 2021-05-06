@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:tawelti/screens/Addreservation/AddReservation.dart';
 import 'package:tawelti/screens/HomePage.dart';
+import 'package:tawelti/screens/Reservation/ReservationList.dart';
 import 'package:tawelti/screens/dashboard.dart';
-import 'package:tawelti/screens/event/DetailsEvent.dart';
+import 'package:tawelti/screens/event/EventList.dart';
+import 'package:tawelti/screens/waiters/WaiterList.dart';
 import 'package:tawelti/screens/waiters/addWaiter.dart';
-import 'package:tawelti/widgets/AddButton.dart';
-import 'package:tawelti/widgets/AppBar.dart';
 
 import '../../constants.dart';
 import 'addFloorPage.dart';
@@ -25,9 +24,9 @@ class Test extends StatelessWidget {
       return [
         MainPage(),
         HomePage(),
-        AddReservation(),
-        AddWaiter(),
-        DetailsEvent()
+        ReservationtList(),
+        WaiterList(),
+        EventList()
       ];
     }
 

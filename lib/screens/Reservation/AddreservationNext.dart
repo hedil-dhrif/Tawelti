@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tawelti/constants.dart';
-import 'package:tawelti/screens/Addreservation/AddResrvationDetails.dart';
-import 'package:tawelti/screens/HomePage.dart';
+import 'package:tawelti/screens/Reservation/AddReservation.dart';
+import 'package:tawelti/screens/Reservation/AddResrvationDetails.dart';
 
 class AddReservationNext extends StatefulWidget {
   @override
@@ -22,6 +22,13 @@ class _AddReservationNextState extends State<AddReservationNext> {
               MediaQuery.of(context).size.height * 0.15),
           child: AppBar(
             iconTheme: IconThemeData(color: KBlue, size: 30),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddReservation()));
+              },
+              icon: Icon(CupertinoIcons.arrow_left),
+            ),
             backgroundColor: Colors.white,
             title: Center(
               child: Text(
@@ -34,22 +41,6 @@ class _AddReservationNextState extends State<AddReservationNext> {
                     fontWeight: FontWeight.w300),
               ),
             ),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 15),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
-                  },
-                  icon: Icon(
-                    Icons.close,
-                    size: 30,
-                    color: KBlue,
-                  ),
-                ),
-              ),
-            ],
             bottom: TabBar(
               tabs: [
                 Tab(

@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tawelti/constants.dart';
 import 'package:tawelti/screens/Addfloor/addFloorPage.dart';
-import 'package:tawelti/screens/Addreservation/AddReservation.dart';
+import 'package:tawelti/screens/Reservation/AddReservation.dart';
 import 'package:tawelti/screens/event/DetailsEvent.dart';
+
+import '../constants.dart';
 
 class AppBarWidget extends StatefulWidget {
   String title;

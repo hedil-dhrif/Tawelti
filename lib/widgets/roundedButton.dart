@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tawelti/screens/Addfloor/addFloorPage.dart';
-import 'package:tawelti/screens/Addreservation/AddReservation.dart';
+import 'package:tawelti/screens/Reservation/AddReservation.dart';
 import 'package:tawelti/screens/event/AddEvent.dart';
 import 'package:tawelti/screens/event/DetailsEvent.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tawelti/widgets/AppBar.dart';
 import 'package:tawelti/constants.dart';
-import 'package:tawelti/screens/Addreservation/AddreservationNext.dart';
+import 'package:tawelti/screens/Reservation/AddreservationNext.dart';
 import '../HomePage.dart';
 import 'package:intl/intl.dart';
 
@@ -81,10 +81,10 @@ class _AddWaitListState extends State<AddWaitList> {
         backgroundColor: Colors.white,
         title: AppBarWidget(
           title: 'Add to wait list',
-          onpressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => HomePage()));
-          },
+          // onpressed: () {
+          //   Navigator.push(
+          //       context, MaterialPageRoute(builder: (context) => HomePage()));
+          // },
         ),
       ),
       body: SingleChildScrollView(
@@ -427,7 +427,7 @@ class _AddWaitListState extends State<AddWaitList> {
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

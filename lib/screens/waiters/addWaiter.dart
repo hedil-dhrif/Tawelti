@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tawelti/screens/waiters/WaiterList.dart';
 import 'package:tawelti/screens/waiters/listWaiters.dart';
-import 'package:tawelti/widgets/AppBar.dart';
 import 'package:tawelti/constants.dart';
-
-import '../HomePage.dart';
-import 'package:tawelti/screens/Addreservation/AddreservationNext.dart';
 
 class AddWaiter extends StatefulWidget {
   @override
@@ -46,15 +43,23 @@ class _AddWaiterState extends State<AddWaiter> {
           iconTheme: IconThemeData(
             color: KBlue,
           ),
-          leading: Icon(CupertinoIcons.arrow_left),
-          title: Text(
-            'Add Waiter',
-            style: TextStyle(
-                fontSize: 25,
-                color: KBlue,
-                fontFamily: 'ProductSans',
-                letterSpacing: 1,
-                fontWeight: FontWeight.w100),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => WaiterList()));
+            },
+            icon: Icon(CupertinoIcons.arrow_left),
+          ),
+          title: Center(
+            child: Text(
+              'Add Waiter',
+              style: TextStyle(
+                  fontSize: 25,
+                  color: KBlue,
+                  fontFamily: 'ProductSans',
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.w100),
+            ),
           ),
           bottom: PreferredSize(
             preferredSize: Size(MediaQuery.of(context).size.width,
@@ -68,9 +73,7 @@ class _AddWaiterState extends State<AddWaiter> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          //crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             SizedBox(
               height: 30,
             ),
@@ -92,17 +95,16 @@ class _AddWaiterState extends State<AddWaiter> {
                       height: 10,
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 0.5, color: KBlue),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 0.5, color: KBlue),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                      )
-                    ),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                          ),
+                        )),
                     SizedBox(
                       height: 20,
                     ),
@@ -120,14 +122,13 @@ class _AddWaiterState extends State<AddWaiter> {
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                           border: Border.all(width: 0.5, color: KBlue),
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextFormField(
                           decoration: InputDecoration(
                             border: InputBorder.none,
                           ),
-                        )
-                    ),
+                        )),
                     SizedBox(
                       height: 20,
                     ),
@@ -145,15 +146,16 @@ class _AddWaiterState extends State<AddWaiter> {
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                           border: Border.all(width: 0.5, color: KBlue),
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextFormField(
                           decoration: InputDecoration(
                             border: InputBorder.none,
                           ),
-                        )
+                        )),
+                    SizedBox(
+                      height: 20,
                     ),
-                    SizedBox(height: 20,),
                     Text(
                       'phone number',
                       style: TextStyle(
@@ -168,14 +170,37 @@ class _AddWaiterState extends State<AddWaiter> {
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                           border: Border.all(width: 0.5, color: KBlue),
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextFormField(
                           decoration: InputDecoration(
                             border: InputBorder.none,
                           ),
-                        )
+                        )),
+                    SizedBox(
+                      height: 20,
                     ),
+                    Text(
+                      'Zone',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: KBlue,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 0.5, color: KBlue),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                          ),
+                        )),
                     SizedBox(
                       height: 40,
                     ),

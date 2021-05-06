@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tawelti/constants.dart';
-import 'package:tawelti/screens/Addreservation/AddReservation.dart';
-import 'package:tawelti/widgets/AppBar.dart';
+import 'package:tawelti/screens/Reservation/AddReservation.dart';
+import 'package:tawelti/screens/Reservation/AddreservationNext.dart';
 import 'package:tawelti/widgets/CustomInputBox.dart';
 import 'package:tawelti/widgets/SubmitButton.dart';
 
@@ -24,15 +24,23 @@ class _AddReservationDetailsState extends State<AddReservationDetails> {
           iconTheme: IconThemeData(
             color: KBlue,
           ),
-          leading: Icon(CupertinoIcons.arrow_left),
-          title: Text(
-            'Add Reservation',
-            style: TextStyle(
-                fontSize: 25,
-                color: KBlue,
-                fontFamily: 'ProductSans',
-                letterSpacing: 1,
-                fontWeight: FontWeight.w100),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AddReservationNext()));
+            },
+            icon: Icon(CupertinoIcons.arrow_left),
+          ),
+          title: Center(
+            child: Text(
+              'Add Reservation',
+              style: TextStyle(
+                  fontSize: 25,
+                  color: KBlue,
+                  fontFamily: 'ProductSans',
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.w100),
+            ),
           ),
           bottom: PreferredSize(
             preferredSize: Size(MediaQuery.of(context).size.width,

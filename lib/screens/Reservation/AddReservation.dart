@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tawelti/widgets/AppBar.dart';
+import 'package:intl/intl.dart';
 import 'package:tawelti/constants.dart';
 
-import '../HomePage.dart';
-import 'package:tawelti/screens/Addreservation/AddreservationNext.dart';
+import 'package:tawelti/screens/Reservation/AddreservationNext.dart';
+import 'package:tawelti/screens/Reservation/ReservationList.dart';
 
 class AddReservation extends StatefulWidget {
   @override
@@ -16,10 +16,9 @@ class _AddReservationState extends State<AddReservation> {
   int _counter = 0;
   String valueChoose;
   List listItem = [
-    '1st Floor',
-    '2nd floor',
-    '3rd floor',
-    '4th floor',
+    'Outside',
+    'Inside',
+    'Garden',
   ];
 
   void _incrementCounter() {
@@ -34,6 +33,41 @@ class _AddReservationState extends State<AddReservation> {
     });
   }
 
+  DateTime datetime;
+
+  String getText() {
+    if (datetime == null) {
+      return 'Select Date';
+    } else {
+      return DateFormat('dd/MM/yyyy').format(datetime);
+    }
+  }
+
+  TimeOfDay time;
+
+  String getTextTime() {
+    if (time == null) {
+      return 'Select Time';
+    } else {
+      final hours = time.hour.toString().padLeft(2, '0');
+      final minutes = time.minute.toString().padLeft(2, '0');
+
+      return '$hours:$minutes';
+    }
+  }
+
+  Future pickTime(BuildContext context) async {
+    final initialTime = TimeOfDay(hour: 9, minute: 0);
+    final newTime = await showTimePicker(
+      context: context,
+      initialTime: time ?? initialTime,
+    );
+
+    if (newTime == null) return;
+
+    setState(() => time = newTime);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +79,13 @@ class _AddReservationState extends State<AddReservation> {
           iconTheme: IconThemeData(
             color: KBlue,
           ),
-          leading: Icon(CupertinoIcons.arrow_left),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ReservationtList()));
+            },
+            icon: Icon(CupertinoIcons.arrow_left),
+          ),
           title: Text(
             'Add Reservation',
             style: TextStyle(
@@ -66,15 +106,11 @@ class _AddReservationState extends State<AddReservation> {
         ),
       ),
       body: Column(
-        //crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-
-          SizedBox(
-            height: 30,
-          ),
           Center(
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.9,
+              width: MediaQuery.of(context).size.width * 0.8,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +123,7 @@ class _AddReservationState extends State<AddReservation> {
                     ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 15,
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -130,63 +166,115 @@ class _AddReservationState extends State<AddReservation> {
                   SizedBox(
                     height: 20,
                   ),
-                  Text(
-                    'Pick a date ',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: KBlue,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: KBlue),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(
-                          Icons.calendar_today_outlined,
-                          color: KBlue,
-                          size: 30,
-                        ),
-                        GestureDetector(
-                          child: Text(
-                            _datetime == null
-                                ? 'Nothing has been picked yet'
-                                : _datetime.toString(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Pick a date :',
                             style: TextStyle(
-                              fontSize: 17,
+                              fontSize: 25,
+                              color: KBlue,
                             ),
                           ),
-                          onTap: () {
-                            showDatePicker(
-                              context: context,
-                              initialDate: _datetime == null
-                                  ? DateTime.now()
-                                  : _datetime,
-                              initialDatePickerMode: DatePickerMode.day,
-                              firstDate: DateTime(2021),
-                              lastDate: DateTime(2040),
-                            ).then((date) {
-                              setState(() {
-                                _datetime = date;
-                              });
-                            });
-                          },
-                        ),
-                      ],
-                    ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width*0.35,
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: KBlue),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(
+                                  Icons.calendar_today_outlined,
+                                  color: KBlue,
+                                  size: 30,
+                                ),
+                                GestureDetector(
+                                  child: Text(
+                                    getText(),
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    showDatePicker(
+                                      context: context,
+                                      initialDate:
+                                      datetime == null ? DateTime.now() : datetime,
+                                      initialDatePickerMode: DatePickerMode.day,
+                                      firstDate: DateTime(2021),
+                                      lastDate: DateTime(2040),
+                                    ).then((date) {
+                                      setState(() {
+                                        datetime = date;
+                                      });
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Pick time :',
+                            style: TextStyle(
+                              fontSize: 25,
+                              color: KBlue,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width*0.35,
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: KBlue),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(
+                                  Icons.timer,
+                                  color: KBlue,
+                                  size: 30,
+                                ),
+                                GestureDetector(
+                                  child: Text(
+                                    getTextTime(),
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    pickTime(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   Text(
-                    'Floor ',
+                    'Pick zone: ',
                     style: TextStyle(
                       fontSize: 20,
                       color: KBlue,

@@ -32,10 +32,11 @@ class _WaitListState extends State<WaitList> {
           iconTheme: IconThemeData(
             color: KBlue,
           ),
-          title: AppBarWidget(
-            title: 'Wait list',
-            onpressed: () {},
-          )),
+          // title: AppBarWidget(
+          //   title: 'Wait list',
+          //   onpressed: () {},
+          // ),
+      ),
       body: Container(
         child: SingleChildScrollView(
           child: Column(
