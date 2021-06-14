@@ -1,86 +1,100 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:flutter_shapes/flutter_shapes.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grouped_buttons/grouped_buttons.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reorderables/reorderables.dart';
+import 'package:tawelti/api/api_Response.dart';
 import 'package:tawelti/constants.dart';
-import 'package:tawelti/screens/Addfloor/FloorDetailsPage.dart';
-import 'package:tawelti/widgets/AppBar.dart';
-import 'package:tawelti/widgets/DragBox.dart';
-import 'package:tawelti/widgets/DraggableTables.dart';
-import 'package:tawelti/widgets/navbar2.dart';
-import 'package:tawelti/widgets/roundedButton.dart';
-import 'package:tawelti/widgets/zone.dart';
+import 'package:tawelti/models/table.dart';
+import 'package:tawelti/models/waiter.dart';
+import 'package:tawelti/models/zone.dart';
+import 'package:tawelti/screens/Addfloor/roundedTable.dart';
+import 'package:tawelti/screens/Addfloor/tableDetails.dart';
+import 'package:tawelti/screens/Addfloor/tableITem2.dart';
+import 'package:tawelti/screens/Addfloor/tableItem.dart';
+import 'package:tawelti/services/table.services.dart';
+import 'package:tawelti/services/waiter.services.dart';
+import 'package:tawelti/services/zone.services.dart';
+import 'package:tawelti/widgets/floorDelete.dart';
 
 class ZonePlanPage extends StatefulWidget {
+  final int etageId;
+  final int zoneId;
+  final int restaurantId;
+  ZonePlanPage({Key key, this.zoneId,this.etageId,this.restaurantId}) : super(key: key);
   @override
   _ZonePlanPageState createState() => _ZonePlanPageState();
 }
 
 class _ZonePlanPageState extends State<ZonePlanPage> {
+  TableServices get tableService => GetIt.I<TableServices>();
+  ZoneServices get zoneService => GetIt.I<ZoneServices>();
+  WaiterServices get waiterService => GetIt.I<WaiterServices>();
+  List<Waiter> waiters = [];
+  APIResponse<List<Waiter>> _apiResponse;
+  APIResponse<List<RestaurantTable>> _apiResponseTables;
+
   var isSuccessful = true;
-  Widget variable;
-  List<Widget> tables;
+  //Widget variable;
+  bool _enabled = false;
+  final List<String> listWaiters = [];
+  bool _isLoading = false;
+  Size size;
+  Offset position;
+  String dropdownValue;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  bool get isEditing => widget.zoneId != null;
+  String errorMessage;
+  Zone zone;
+  Waiter waiter;
+  UniqueKey key;
+  TextEditingController zoneNameController = TextEditingController();
+  TextEditingController waiterNameController;
+
+  //var keyText = GlobalKey();
 
   @override
   void initState() {
+    if (isEditing) {
+      _getZoneDetails();
+      _fetchTables(widget.zoneId);
+      _fetchWaiters();
+    }
     super.initState();
-    tables = <Widget>[
-      GestureDetector(
-        onDoubleTap: () {
-          _deleteDialog();
-        },
-        onTap: () {
-          _showMyDialog();
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(3),
-            color: KBlue,
-          ),
-          height: 60,
-          width: 60,
-        ),
-      ),
-      GestureDetector(
-        onDoubleTap: () {
-          _deleteDialog();
-        },
-        onTap: () {
-          _showMyDialog();
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(3),
-            color: KBlue,
-          ),
-          height: 60,
-          width: 60,
-        ),
-      ),
-    ];
+    calculateSizeAndPosition(key);
   }
+
+  void calculateSizeAndPosition(key) =>
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final RenderBox box = key.context.findRenderObject();
+
+        setState(() {
+          position = box.localToGlobal(Offset.zero);
+        });
+        print(position.dx);
+        print(position.dy);
+      });
 
   @override
   Widget build(BuildContext context) {
     void _onReorder(int oldIndex, int newIndex) {
       setState(() {
-        Widget row = tables.removeAt(oldIndex);
-        tables.insert(newIndex, row);
+        Widget row = _buildListTables().removeAt(oldIndex);
+        _buildListTables().insert(newIndex, row);
       });
     }
 
-    var wrap = ReorderableWrap(
+    final wrap = _isLoading?CircularProgressIndicator():ReorderableWrap(
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
         maxMainAxisCount: 4,
-        spacing: 30,
-        runSpacing: 24.0,
+        spacing: 20,
+        runSpacing: 16.0,
         padding: const EdgeInsets.all(8),
-        children: tables,
+        children: _buildListTables(),
         onReorder: _onReorder,
         onNoReorder: (int index) {
           //this callback is optional
@@ -103,7 +117,7 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
           ),
           leading: Icon(CupertinoIcons.arrow_left),
           title: Text(
-            'Floor Plan',
+            'Zone Details',
             style: TextStyle(color: Colors.black87, fontSize: 24),
           ),
           bottom: PreferredSize(
@@ -131,34 +145,23 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
                       Row(
                         children: [
                           Container(
-                            width: 100,
+                            width: MediaQuery.of(context).size.width * 0.5,
                             child: TextFormField(
+                              enabled: _enabled,
+                              controller: zoneNameController,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                               decoration: InputDecoration(
                                   border: UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black87),
+                                    borderSide: BorderSide.none,
                                   ),
-                                  hintText: 'Floor',
+                                  hintText: 'Outside Zone',
                                   hintStyle: TextStyle(
                                     fontSize: 20,
-                                    color: Colors.black,
-                                  )),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Container(
-                            width: 100,
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  border: UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black87),
-                                  ),
-                                  hintText: 'Zone',
-                                  hintStyle: TextStyle(
-                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   )),
                             ),
@@ -167,33 +170,84 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
                       ),
                       Row(
                         children: [
-                          Icon(
-                            Icons.delete_outline,
-                            size: 30,
-                          ),
-                          Icon(
-                            Icons.edit_outlined,
-                            size: 30,
-                          )
+                          IconButton(
+                              onPressed: () async {
+                                final result = await showDialog(
+                                    context: context,
+                                    builder: (_) => FloorDelete());
+
+                                if (result) {
+                                  final deleteResult = await zoneService
+                                      .deleteZone(widget.zoneId.toString());
+                                  Navigator.of(context).pop();
+                                  var message =
+                                      'The zone was deleted successfully';
+
+                                  // showDialog(
+                                  //     context: context,
+                                  //     builder: (_) => AlertDialog(
+                                  //           title: Text('Done'),
+                                  //           content: Text(message),
+                                  //           actions: <Widget>[
+                                  //             FlatButton(
+                                  //                 child: Text('Ok'),
+                                  //                 onPressed: () {
+                                  //                   Navigator.of(context).pop();
+                                  //                 })
+                                  //           ],
+                                  //         ));
+
+                                  return deleteResult?.data ?? false;
+                                }
+                                print(result);
+                                return result;
+                              },
+                              icon: Icon(
+                                Icons.delete_outline,
+                                size: 30,
+                              )),
+                          IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _enabled = !_enabled;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.edit_outlined,
+                                size: 30,
+                              ))
                         ],
                       ),
                     ],
                   ),
-                  Container(
-                    width: 120,
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black87),
-                          ),
-                          hintText: 'Waiter name',
-                          hintStyle: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black54,
-                          )),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Waiter name',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: KBlue,
+                        ),
+                      ),
+                      Container(
+                        width: 150,
+                        child:_builListWaiters(),
+                      ),
+                    ],
                   ),
                 ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 20, right: 20),
+              child: Text(
+                'List tables',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87),
               ),
             ),
             Container(
@@ -211,24 +265,10 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        var newTable = GestureDetector(
-                          onDoubleTap: () {
-                            _deleteDialog();
-                          },
-                          onTap: () {
-                            _showMyDialog();
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3),
-                              color: KBlue,
-                            ),
-                            height: MediaQuery.of(context).size.height * 0.07,
-                            width: 60,
-                          ),
-                        );
                         setState(() {
-                          tables.add(newTable);
+                          _addTable(100, 2, 1, 0);
+                          _fetchTables(widget.zoneId);
+
                         });
                       },
                       child: Container(
@@ -242,20 +282,10 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        var newTable = GestureDetector(
-                          onDoubleTap: () {
-                            _deleteDialog();
-                          },
-                          onTap: () {
-                            _showMyDialog();
-                          },
-                          child: CircleAvatar(
-                            radius: 32,
-                            backgroundColor: KBlue,
-                          ),
-                        );
                         setState(() {
-                          tables.add(newTable);
+                          _addTable(101, 4, 1, 0);
+                          _fetchTables(widget.zoneId);
+
                         });
                       },
                       child: CircleAvatar(
@@ -265,23 +295,9 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        var newTable = GestureDetector(
-                            onDoubleTap: () {
-                              _deleteDialog();
-                            },
-                            onTap: () {
-                              _showMyDialog();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                color: KBlue,
-                              ),
-                              height: 60,
-                              width: 100,
-                            ));
                         setState(() {
-                          tables.add(newTable);
+                          _addTable(102, 4, 2, 0);
+                          _fetchTables(widget.zoneId);
                         });
                       },
                       child: Container(
@@ -316,7 +332,8 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
             Container(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: wrap,
+                //child: _buildListTables(_apiResponseTables.data),
+                child: _isLoading?CircularProgressIndicator():wrap,
               ),
               margin: EdgeInsets.only(
                 top: 20,
@@ -331,15 +348,10 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 120, top: 20),
-              child: FlatButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FloorDetailsPage(
-                                ListTables: tables,
-                              )));
+              padding: const EdgeInsets.only(left: 120, top: 20, right: 20),
+              child: GestureDetector(
+                onTap: ()  {
+                  _enabled?_updateZone():Navigator.pop(context);
                 },
                 child: Container(
                   height: 60,
@@ -356,7 +368,8 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
                         children: [
                           Text(
                             'Submit',
-                            style: TextStyle(fontSize: 24, color: Colors.white),
+                            style:
+                                TextStyle(fontSize: 24, color: Colors.white),
                           )
                         ],
                       ),
@@ -368,182 +381,6 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Future<void> _showMyDialog() async {
-    int _counter = 0;
-
-    void _incrementCounter() {
-      setState(() {
-        _counter++;
-      });
-    }
-
-    void _decrementCounter() {
-      setState(() {
-        _counter--;
-      });
-    }
-
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xffF4F4F4),
-          title: Center(
-              child: Text(
-            'Table details',
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
-          )),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          contentPadding: EdgeInsets.all(0.0),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'Guests number',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black87),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '$_counter',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                ),
-                              ),
-                              Column(
-                                children: [
-                                  GestureDetector(
-                                    child: Icon(
-                                      Icons.arrow_drop_up,
-                                      size: 30,
-                                      color: KBlue,
-                                    ),
-                                    onTap: _incrementCounter,
-                                  ),
-                                  GestureDetector(
-                                    child: Icon(
-                                      Icons.arrow_drop_down,
-                                      size: 30,
-                                      color: KBlue,
-                                    ),
-                                    onTap: _decrementCounter,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Status',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      RadioButtonGroup(
-                        labels: [
-                          'blocked',
-                        ],
-                        labelStyle: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                        activeColor: KBlue,
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 25, vertical: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Reservations',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_outlined,
-                        size: 32,
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-          actions: [
-            FlatButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Container(
-                height: 60,
-                width: 240,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: KBlue,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Submit',
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -573,134 +410,37 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
                     alignment: WrapAlignment.spaceBetween,
                     runAlignment: WrapAlignment.spaceBetween,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          var newTable = GestureDetector(
-                            onDoubleTap: () {
-                              _deleteDialog();
-                            },
-                            onTap: () {
-                              _showMyDialog();
-                            },
-                            child: ClipOval(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: KBlue,
-                                ),
-                                height: 60,
-                                width: 90,
-                              ),
-                            ),
-                          );
-                          setState(() {
-                            tables.add(newTable);
-                            Navigator.pop(context);
-                          });
-                        },
-                        child: ClipOval(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: KBlue,
-                            ),
-                            height: 60,
-                            width: 90,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          var newTable = GestureDetector(
-                            onDoubleTap: () {
-                              _deleteDialog();
-                            },
-                            onTap: () {
-                              _showMyDialog();
-                            },
-                            child: ClipPath(
-                                clipper: OctagonalClipper(),
-                                child: Container(
-                                  height: 80,
-                                  width: 80,
-                                  color: KBlue,
-                                )),
-                          );
-                          setState(() {
-                            tables.add(newTable);
-                            Navigator.pop(context);
-                          });
-                        },
-                        child: ClipPath(
-                            clipper: OctagonalClipper(),
-                            child: Container(
-                              height: 80,
-                              width: 80,
-                              color: KBlue,
-                            )),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          var newTable = GestureDetector(
-                            onDoubleTap: () {
-                              _deleteDialog();
-                            },
-                            onTap: () {
-                              _showMyDialog();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(3),
-                                color: KBlue,
-                              ),
-                              height: 100,
-                              width: 60,
-                            ),
-                          );
-                          setState(() {
-                            tables.add(newTable);
-                            Navigator.pop(context);
-                          });
-                        },
+                      ClipOval(
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
+                            color: KBlue,
+                          ),
+                          height: 60,
+                          width: 90,
+                        ),
+                      ),
+                      ClipPath(
+                          clipper: OctagonalClipper(),
+                          child: Container(
+                            height: 80,
+                            width: 80,
+                            color: KBlue,
+                          )),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3),
+                          color: KBlue,
+                        ),
+                        height: 100,
+                        width: 60,
+                      ),
+                      ClipOval(
+                        child: Container(
+                          decoration: BoxDecoration(
                             color: KBlue,
                           ),
                           height: 100,
-                          width: 60,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          var newTable = GestureDetector(
-                            onDoubleTap: () {
-                              _deleteDialog();
-                            },
-                            onTap: () {
-                              _showMyDialog();
-                            },
-                            child: ClipOval(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: KBlue,
-                                ),
-                                height: 100,
-                                width: 70,
-                              ),
-                            ),
-                          );
-                          setState(() {
-                            tables.add(newTable);
-                            Navigator.pop(context);
-                          });
-                        },
-                        child: ClipOval(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: KBlue,
-                            ),
-                            height: 100,
-                            width: 70,
-                          ),
+                          width: 70,
                         ),
                       ),
                     ],
@@ -714,70 +454,267 @@ class _ZonePlanPageState extends State<ZonePlanPage> {
     );
   }
 
-  Future<void> _deleteDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xffF4F4F4),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          contentPadding: EdgeInsets.all(0.0),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Text(
-                    'Are you sure you want to remove this table',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ),
-                Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(fontSize: 20, color: Colors.black87),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            Navigator.pop(context);
-                          });
-                        },
-                      ),
-                      Container(
-                        width: 10,
-                        color: Colors.grey,
-                      ),
-                      TextButton(
-                        child: Text(
-                          'Delete',
-                          style: TextStyle(fontSize: 20, color: Colors.black87),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            tables.removeAt(0);
-                            Navigator.pop(context);
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                )
-              ],
+  _builListWaiters() {
+    return _isLoading?CircularProgressIndicator():DropdownButton<String>(
+      value: dropdownValue,
+      icon: const Icon(CupertinoIcons.chevron_down),
+      iconSize: 24,
+      //elevation: 50,
+      style: const TextStyle(color: Colors.black87),
+      onChanged: (String newValue) {
+        setState(() {
+          dropdownValue = newValue;
+        });
+      },
+      items: _buildListWaiters().map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
         );
-      },
+      }).toList(),
     );
+  }
+
+  _getZoneDetails() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await zoneService.getZone(widget.zoneId.toString()).then((response) {
+      if (response.error) {
+        errorMessage = response.errorMessage ?? 'An error occurred';
+      }
+      zone = response.data;
+      print(zone.nom);
+      print(zone.id);
+      zoneNameController.text = zone.nom;
+      //_contentController.text = note.noteContent;
+    });
+    setState(() {
+      _isLoading = false;
+    });
+  }
+// _getWaiterName()async{
+//   setState(() {
+//     _isLoading = true;
+//   });
+//   await zoneService.getZoneWaiter(widget.zoneId.toString()).then((response) {
+//     if (response.error) {
+//       errorMessage = response.errorMessage ?? 'An error occurred';
+//     }
+//     waiter = response.data;
+//     print(waiter.id);
+//     dropdownValue=waiter.nom;
+//     //_contentController.text = note.noteContent;
+//   });
+//   setState(() {
+//     _isLoading = false;
+//   });
+// }
+
+  _fetchWaiters() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    _apiResponse = await waiterService.getWaitersList(widget.restaurantId.toString());
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  _buildListWaiters() {
+    for (int i = 0; i < _apiResponse.data.length; i++) {
+      listWaiters.add(_apiResponse.data[i].prenom);
+    }
+    return listWaiters;
+  }
+
+  _fetchTables(zoneID) async {
+    print(zoneID);
+    setState(() {
+      _isLoading = true;
+    });
+
+    _apiResponseTables = await zoneService.getZoneTablesList(zoneID.toString());
+    print(_apiResponseTables.data.length);
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  List<Widget> _buildListTables() {
+    final List<Widget> tables = [];
+    for (int i = 0; i < _apiResponseTables.data.length; i++) {
+      var code = _apiResponseTables.data[i].code;
+      Widget getTable() {
+        switch (code) {
+          case 100:
+            return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DetailsTable(
+                                tableCode: _apiResponseTables.data[i].code,
+                                zoneId: widget.zoneId,
+                                tableId:
+                                    _apiResponseTables.data[i].id.toString(),
+                              ))).then((__) => _fetchTables(widget.zoneId));
+                },
+                child: TableItem(
+                  index: _apiResponseTables.data[i].id.toString(),
+                  etat: _apiResponseTables.data[i].etat,
+                  deleteFunction: () async {
+                    final deleteResult = await tableService
+                        .deleteTable(_apiResponseTables.data[i].id.toString());
+                    _fetchTables(widget.zoneId);
+
+                    var message = 'The table was deleted successfully';
+
+                    return deleteResult?.data ?? false;
+                  },
+                ));
+
+            break;
+          case 101:
+            return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DetailsTable(
+                                tableCode: _apiResponseTables.data[i].code,
+                                zoneId: widget.zoneId,
+                                tableId:
+                                    _apiResponseTables.data[i].id.toString(),
+                              ))).then((__) => _fetchTables(widget.zoneId));
+                },
+                child: RoundedTable(
+                  index: _apiResponseTables.data[i].id.toString(),
+                  etat: _apiResponseTables.data[i].etat,
+                  deleteFunction: () async {
+                    final deleteResult = await tableService
+                        .deleteTable(_apiResponseTables.data[i].id.toString());
+                    _fetchTables(widget.zoneId);
+
+                    var message = 'The table was deleted successfully';
+
+                    return deleteResult?.data ?? false;
+                  },
+                ));
+            break;
+          case 102:
+            return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DetailsTable(
+                                tableCode: _apiResponseTables.data[i].code,
+                                zoneId: widget.zoneId,
+                                tableId:
+                                    _apiResponseTables.data[i].id.toString(),
+                              ))).then((__) => _fetchTables(widget.zoneId));
+                },
+                child: TableItem2(
+                  index: _apiResponseTables.data[i].id.toString(),
+                  etat: _apiResponseTables.data[i].etat,
+                  deleteFunction: () async {
+                    final deleteResult = await tableService
+                        .deleteTable(_apiResponseTables.data[i].id.toString());
+                    _fetchTables(widget.zoneId);
+
+                    var message = 'The table was deleted successfully';
+
+                    return deleteResult?.data ?? false;
+                  },
+                ));
+            break;
+        }
+      }
+
+      tables.add(getTable());
+    }
+    return tables;
+  }
+
+  _addTable(code, nbCouverts, tolerance, etat) async {
+    setState(() {
+      _isLoading = true;
+    });
+    final table = RestaurantTable(
+      code: code,
+      nbCouverts: nbCouverts,
+      tolerance: tolerance,
+      etat: etat,
+      zoneId: widget.zoneId,
+    );
+    final result = await tableService.createTable(table);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    // showDialog(
+    //     context: context,
+    //     builder: (_) => AlertDialog(
+    //           title: Text('Done'),
+    //           content: Text('your table is added successfully'),
+    //           actions: <Widget>[
+    //             FlatButton(
+    //               child: Text('Ok'),
+    //               onPressed: () {
+    //                 setState(() {
+    //                   Navigator.pop(context);
+    //                 });
+    //               },
+    //             )
+    //           ],
+    //         ));
+  }
+
+  _updateZone()async{
+    setState(() {
+      _isLoading = true;
+    });
+    final zone = Zone(
+      etageId: widget.etageId,
+      nom: zoneNameController.text,
+    );
+    final result = await zoneService.updateZone(
+        widget.zoneId.toString(), zone);
+    setState(() {
+      _isLoading = false;
+    });
+
+    final title = 'Done';
+    final text = 'Your zone was updated';
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text(title),
+          content: Text(text),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        ));
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => FloorDetailsPage()));
+
   }
 }

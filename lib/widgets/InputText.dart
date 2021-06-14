@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:tawelti/constants.dart';
 
 
 class InputText extends StatefulWidget {
   final String label;
   final String inputHint;
+  final TextEditingController controller;
+  final bool enabled;
 
-  InputText({this.label,this.inputHint});
+  InputText({this.label,this.inputHint,this.controller,this.enabled});
   @override
   _InputTextState createState() => _InputTextState();
 }
@@ -20,7 +23,7 @@ class _InputTextState extends State<InputText> {
         children: [
           Padding(
             padding: const EdgeInsets.all(10),
-            child: Text(widget.label,style: TextStyle(fontSize: 20),),
+            child: Text(widget.label,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: KBlue),),
           ),
           Container(
             height: 60,
@@ -32,6 +35,8 @@ class _InputTextState extends State<InputText> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextFormField(
+                  enabled: widget.enabled,
+                  controller: widget.controller,
           decoration: InputDecoration(
           border: UnderlineInputBorder(
                   borderSide: BorderSide.none,

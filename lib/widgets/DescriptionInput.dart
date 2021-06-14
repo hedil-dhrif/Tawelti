@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tawelti/constants.dart';
 
 
 class DescriptionTextWidget extends StatefulWidget {
@@ -38,14 +39,14 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
         children: [
           Padding(
             padding: const EdgeInsets.all(10),
-            child: Text('Description',style: TextStyle(fontSize: 20),),
+            child: Text('Description',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: KBlue),),
           ),
           new Container(
             decoration: BoxDecoration(
               color: Color(0xffE5E5E5),
               borderRadius: BorderRadius.circular(10),
             ),
-            padding: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+            padding: new EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: secondHalf.isEmpty
                 ? new Text(firstHalf)
                 : new Column(

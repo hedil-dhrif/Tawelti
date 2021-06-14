@@ -13,8 +13,7 @@ class _listFloorState extends State<listFloor> {
       child:   ListView.separated(
           itemCount: 3,
           itemBuilder: (BuildContext context, int index) {
-            return  FloorItem(floorname: 'ghj',zoneNumber: '3',tableNumber: 0);
-
+            return  FloorItem(floorname: 'ghj',);
           },
           separatorBuilder: (BuildContext context, int index) => const Divider(color: Colors.black87,),),
     );

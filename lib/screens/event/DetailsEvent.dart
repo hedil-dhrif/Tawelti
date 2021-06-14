@@ -1,18 +1,61 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tawelti/constants.dart';
+import 'package:tawelti/models/event.dart';
 import 'package:tawelti/screens/event/EventList.dart';
+import 'package:tawelti/services/event.services.dart';
 import 'package:tawelti/widgets/DisabledInputbox.dart';
 import 'package:tawelti/widgets/ImageBox.dart';
 
 class DetailsEvent extends StatefulWidget {
-
+ final int eventId;
+ DetailsEvent({this.eventId});
   @override
   _DetailsEventState createState() => _DetailsEventState();
 }
 
 class _DetailsEventState extends State<DetailsEvent> {
+  bool get isEditing => widget.eventId != null;
+  EventServices get waitersService => GetIt.I<EventServices>();
+  String errorMessage;
+  Event event;
+  bool _isLoading= false;
+  bool _isEnabled =false;
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _categoryController = TextEditingController();
+  TextEditingController _startController = TextEditingController();
+  TextEditingController _endController = TextEditingController();
+  void initState() {
+    super.initState();
+
+    if (isEditing) {
+      setState(() {
+        _isLoading = true;
+      });
+      waitersService.getEvent(widget.eventId.toString()).then((response) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (response.error) {
+          errorMessage = response.errorMessage ?? 'An error occurred';
+        }
+        event = response.data;
+        print(event);
+        _nameController.text=event.nom;
+        _descriptionController.text=event.description;
+        _startController.text=event.dateDebut as String;
+        _endController.text=event.dateFin as String;
+        _categoryController.text=event.category;
+
+      });
+    }
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +95,7 @@ class _DetailsEventState extends State<DetailsEvent> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Container(
               height: MediaQuery.of(context).size.height * 0.2,
@@ -67,22 +110,51 @@ class _DetailsEventState extends State<DetailsEvent> {
             SizedBox(
               height: 20,
             ),
+            Container(
+              margin: EdgeInsets.only(right: 50),
+              decoration: BoxDecoration(border: Border.all(color: Colors.black87),borderRadius: BorderRadius.circular(4)),
+              child: IconButton(icon: Icon(Icons.edit), onPressed: (){
+                setState(() {
+                  _isEnabled=!_isEnabled;
+
+                });
+              }),
+            ),
             DisabledInputBox(
+              enabled:_isEnabled ,
+              controller: _nameController,
               label: 'Event name: ',
               inputHint: 'XXXXX',
               color: KBlue,
             ),
             DisabledInputBox(
+              enabled:_isEnabled ,
+
+              controller: _categoryController,
+              label: 'Event category: ',
+              inputHint: 'XXXXX',
+              color: KBlue,
+            ),
+            DisabledInputBox(
+              enabled:_isEnabled ,
+
+              controller: _descriptionController,
               label: 'Event description: ',
               inputHint: 'lorem ipsium ...',
               color: KBlue,
             ),
             DisabledInputBox(
+              enabled:_isEnabled ,
+
+              controller: _startController,
               label: 'Start at:',
               inputHint: '20:00',
               color: KBlue,
             ),
             DisabledInputBox(
+              enabled:_isEnabled ,
+
+              controller: _endController,
               label: 'End at:',
               inputHint: '22:00',
               color: KBlue,
@@ -121,7 +193,44 @@ class _DetailsEventState extends State<DetailsEvent> {
                   ImageBox(),
                 ],
               ),
+
             ),
+            _isEnabled?FlatButton(onPressed: () async{
+              setState(() {
+                _isLoading = true;
+              });
+              final event = Event(
+                nom: _nameController.text,
+                category: _categoryController.text,
+                description: _descriptionController.text,
+                //createdAt: _startController.text,
+              );
+              final result = await waitersService.updateEvent(widget.eventId.toString(), event);
+
+              setState(() {
+                _isLoading = false;
+              });
+
+              final title = 'Done';
+              final text = result.error ? (result.errorMessage ?? 'An error occurred') : 'Your event was updated';
+
+              showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: Text(title),
+                    content: Text(text),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('Ok'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  )
+              );
+
+            }, child: Text('submit')):Container(),
           ],
         ),
       ),

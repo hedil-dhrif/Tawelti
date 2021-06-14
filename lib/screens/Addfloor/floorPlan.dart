@@ -1,130 +1,99 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reorderables/reorderables.dart';
+import 'package:tawelti/api/api_Response.dart';
 import 'package:tawelti/constants.dart';
+import 'package:tawelti/models/table.dart';
+import 'package:tawelti/models/zone.dart';
+import 'package:tawelti/screens/Addfloor/roundedTable.dart';
+import 'package:tawelti/screens/Addfloor/tableITem2.dart';
+import 'package:tawelti/screens/Addfloor/tableItem.dart';
+import 'package:tawelti/screens/Addfloor/zoneItem.dart';
 import 'package:tawelti/screens/Addfloor/zonePlan.dart';
+import 'package:tawelti/services/zone.services.dart';
 
 class FloorPlan extends StatefulWidget {
-   List<Widget> ListTables;
-   FloorPlan({this.ListTables});
+  final int restaurantId;
+  final int etageID;
+  FloorPlan({this.etageID, this.restaurantId});
   @override
   _FloorPlanState createState() => _FloorPlanState();
 }
 
 class _FloorPlanState extends State<FloorPlan> {
-  List<Widget> ListTables = [
-    Container(
-    height: 50,
-    width: 50,
-    color: KBlue,
-  ),
-    Container(
-      height: 50,
-      width: 50,
-      color: KBlue,
-    ),
-    Container(
-      height: 50,
-      width: 50,
-      color: KBlue,
-    ),
-    Container(
-      height: 50,
-      width: 50,
-      color: KBlue,
-    ),
-    Container(
-      height: 50,
-      width: 50,
-      color: KBlue,
-    ),
-    Container(
-      height: 50,
-      width: 50,
-      color: KBlue,
-    ),
-    Container(
-      height: 50,
-      width: 50,
-      color: KBlue,
-    ),
-  ];
+  bool _isLoading = false;
+  ZoneServices get zoneService => GetIt.I<ZoneServices>();
+  List<Zone> zones = [];
+  APIResponse<List<Zone>> _apiResponse;
+  final List<String> listZonesId = [];
 
-  // List<Widget> ListTables=widget.ListTables;
-  void _onReorder(int oldIndex, int newIndex) {
+  void initState() {
+    _fetchFloors();
+    super.initState();
+  }
+
+  _fetchFloors() async {
     setState(() {
-      Widget row = ListTables.removeAt(oldIndex);
-      ListTables.insert(newIndex, row);
+      _isLoading = true;
+    });
+
+    _apiResponse = await zoneService.getZonesList(widget.etageID.toString());
+    _buildListZonesId();
+    setState(() {
+      _isLoading = false;
     });
   }
 
-  //
-  // void _onReorder(int oldIndex, int newIndex) {
-  //   setState(() {
-  //     Widget row = imageList.removeAt(oldIndex);
-  //     imageList.insert(newIndex, row);
-  //   });
-  // }
+  // List<Widget> ListTables=widget.ListTables;
 
   @override
   Widget build(BuildContext context) {
-    var wrap = ReorderableWrap(
-        alignment: WrapAlignment.spaceBetween,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        maxMainAxisCount: 2,
-        spacing: 30,
-        runSpacing: 24.0,
-        padding: const EdgeInsets.all(8),
-        children: ListTables,
-        onReorder: _onReorder,
-        onNoReorder: (int index) {
-          //this callback is optional
-          debugPrint(
-              '${DateTime.now().toString().substring(5, 22)} reorder cancelled. index:$index');
-        },
-        onReorderStarted: (int index) {
-          //this callback is optional
-          debugPrint(
-              '${DateTime.now().toString().substring(5, 22)} reorder started: index:$index');
-        });
     return Container(
-      // height: MediaQuery.of(context).size.height * 0.7,
-      // width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.height * 0.6,
+      width: MediaQuery.of(context).size.width * 0.9,
       color: KBlue,
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: Wrap(
-          spacing: 8.0,
-          runSpacing: 4.0,
-          //onReorder: _onReorder,
-          //padding: const EdgeInsets.all(8),
-          children: [
-            GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ZonePlanPage()));
-              },
-              child: Container(
-               // height: 400,
-               // width: 400,
-               color: Color(0xfff6f6f6),
-               child: wrap,
-                ),
-            ),
-             Container(
-               // height: 400,
-               // width: 400,
-               color: Colors.grey,
-               child: wrap,
-             ),
-             Container(
-               // height: 400,
-               // width: 400,
-               color: Colors.red,
-               child: wrap,
-             ),
-          ],
+      child: _isLoading
+          ? CircularProgressIndicator()
+          : _buildListZones(_apiResponse.data),
+    );
+  }
+
+  _buildListZones(List data) {
+    return Container(
+      child: new StaggeredGridView.countBuilder(
+        crossAxisCount: 1,
+        itemCount: data.length,
+        itemBuilder: (BuildContext context, int index) => GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ZonePlanPage(
+                          zoneId: data[index].id,
+                          etageId: data[index].etageId,
+                          restaurantId: widget.restaurantId,
+                        ))).then((__) => _fetchFloors());
+          },
+          child: ZoneItem(
+            zoneId: data[index].id,
+            zoneName: data[index].nom,
+          ),
         ),
+        staggeredTileBuilder: (int index) =>
+            new StaggeredTile.count(2, index.isEven ? 1 : 1),
+        mainAxisSpacing: 4.0,
+        crossAxisSpacing: 4.0,
       ),
     );
+  }
+
+  _buildListZonesId() {
+    for (int i = 0; i < _apiResponse.data.length; i++) {
+      listZonesId.add(_apiResponse.data[i].id.toString());
+      print(listZonesId[i]);
+    }
+    return listZonesId;
   }
 }

@@ -35,7 +35,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
           style: TextStyle(color: Colors.black87, fontSize: 24),
         ),
         actions: [
-          GestureDetector(child: Icon(CupertinoIcons.plus_app,size: 32,), onTap:_showMyDialog,),
+          //GestureDetector(child: Icon(CupertinoIcons.plus_app,size: 32,), onTap:_showMyDialog,),
           IconButton(
             icon: Icon(
               Icons.more_vert_outlined,

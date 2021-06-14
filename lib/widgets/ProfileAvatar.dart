@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tawelti/constants.dart';
 
 
 class ProfileAvatar extends StatelessWidget {
@@ -8,9 +9,9 @@ class ProfileAvatar extends StatelessWidget {
       child:  Stack(
         children: [
           CircleAvatar(
-            backgroundColor: Colors.black87,
+            backgroundColor: KBlue,
             radius: 60,
-            child: Text('M'),
+            backgroundImage: AssetImage('assets/profil.png'),
           ),
           Positioned(
             top: 80,

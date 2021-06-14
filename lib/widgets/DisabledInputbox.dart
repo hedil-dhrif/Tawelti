@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:tawelti/constants.dart';
 
 class DisabledInputBox extends StatefulWidget {
-  String label;
-  String inputHint;
-  Color color;
-  TextEditingController controller;
+  final String label;
+  final String inputHint;
+  final Color color;
+  final TextEditingController controller;
+  final bool enabled;
 
-  DisabledInputBox({this.label, this.inputHint, this.color,this.controller});
+  DisabledInputBox({this.label, this.inputHint, this.color,this.controller,this.enabled});
   @override
   _DisabledInputBoxState createState() => _DisabledInputBoxState();
 }
@@ -42,7 +43,7 @@ class _DisabledInputBoxState extends State<DisabledInputBox> {
               border: Border.all(color: widget.color , width: 1),
             ),
             child: TextFormField(
-              enabled: false,
+              enabled: widget.enabled,
               controller: widget.controller,
               style: TextStyle(
                   fontSize: 20,

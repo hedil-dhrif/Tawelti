@@ -2,28 +2,53 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tawelti/api/api_Response.dart';
 import 'package:tawelti/constants.dart';
+import 'package:tawelti/models/event.dart';
+import 'package:tawelti/models/waiter.dart';
 import 'package:tawelti/screens/event/AddEvent.dart';
 import 'package:tawelti/screens/event/DetailsEvent.dart';
+import 'package:tawelti/services/event.services.dart';
 import 'package:tawelti/widgets/AppBar.dart';
 import 'package:tawelti/widgets/EventCard.dart';
+import 'package:tawelti/widgets/floorDelete.dart';
 
 class EventList extends StatefulWidget {
+  final int restaurantId;
+  EventList({this.restaurantId});
   @override
   _EventListState createState() => _EventListState();
 }
 
 class _EventListState extends State<EventList> {
+  EventServices get eventService => GetIt.I<EventServices>();
+  List<Event> events = [];
+  APIResponse<List<Event>> _apiResponse;
+  bool _isLoading = false;
+
   CalendarController _controller;
   Map<DateTime, List<dynamic>> _events;
   List<dynamic> _selectedEvents;
   TextEditingController _eventController;
   SharedPreferences prefs;
 
+  _fetchEvents() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    _apiResponse = await eventService.getEventsList(widget.restaurantId.toString());
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   void initState() {
+    _fetchEvents();
     super.initState();
     _controller = CalendarController();
     _eventController = TextEditingController();
@@ -149,45 +174,10 @@ class _EventListState extends State<EventList> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  EventCard(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  EventCard(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  EventCard(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  EventCard(),
-                ],
-              ),
+              child: Container(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: _buildEventsList(_apiResponse.data)),
             ),
-
-            /*..._selectedEvents.map(
-              (event) => ListTile(
-                title: Container(
-                  color: Colors.white,
-                    padding: EdgeInsets.all(20),
-                    child: Text(event.title),
-                ),
-                */ /*onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => EventDetailsPage(
-                        event: event,
-                      ),
-                    ),
-                  );
-                },*/ /*
-              ),
-            ),*/
           ],
         ),
       ),
@@ -196,9 +186,65 @@ class _EventListState extends State<EventList> {
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddEvent()));
+              context, MaterialPageRoute(builder: (context) => AddEvent(restauarntId: widget.restaurantId,))).then((__) => _fetchEvents());
         },
       ),
     );
+  }
+
+  _buildEventsList(List data) {
+    if(data.length>0){
+      return Container(
+        child: ListView.separated(
+          itemCount: data.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Dismissible(
+              key: ValueKey(data[index].id),
+              direction: DismissDirection.startToEnd,
+              onDismissed: (direction) {},
+              confirmDismiss: (direction) async {
+                final result = await showDialog(
+                    context: context, builder: (_) => FloorDelete());
+
+                if (result) {
+                  final deleteResult = await eventService
+                      .deleteEvent(data[index].id.toString());
+                  _fetchEvents();
+
+                  var message = 'The event was deleted successfully';
+
+                  return deleteResult?.data ?? false;
+                }
+                print(result);
+                return result;
+              },
+              background: Container(
+                  color: Colors.red,
+                  padding: EdgeInsets.only(left: 16),
+                  child: Align(
+                    child: Icon(Icons.delete, color: Colors.white),
+                    alignment: Alignment.centerLeft,
+                  )),
+              child: EventCard(
+                EventName: data[index].nom,
+                category: data[index].category,
+                description: data[index].description,
+                pressDetails:  () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => DetailsEvent(eventId: data[index].id,))).then((__) => _fetchEvents());
+                },
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) => const Divider(
+            color: Colors.black87,
+          ),
+        ),
+      );
+    }else{
+      return Center(child: Text('no events yet',style: TextStyle(fontSize: 20,color: Colors.white),));
+
+    }
+
   }
 }

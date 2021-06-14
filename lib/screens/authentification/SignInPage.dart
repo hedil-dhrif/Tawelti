@@ -1,14 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tawelti/api/api.dart';
+import 'package:tawelti/models/Restaurant.dart';
+import 'package:tawelti/screens/AddRestaurantPage.dart';
+import 'package:tawelti/screens/Addfloor/test.dart';
 import 'package:tawelti/screens/authentification/GetPassword.dart';
+import 'package:tawelti/services/user.services.dart';
 import 'package:tawelti/widgets/CustomInputBox.dart';
 import 'package:tawelti/widgets/MyCostumTitleWidget.dart';
 import 'package:tawelti/constants.dart';
 import 'package:tawelti/widgets/SubmitButton.dart';
-import 'package:tawelti/screens/AddRestaurantPage.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -17,8 +21,17 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   bool _isLoading = false;
+ String token;
+ int userId;
+ String username;
+  bool _validate = false;
+  bool _hasResto = false;
+  UserServices get userService=>GetIt.I<UserServices>();
+  // bool get isEditing => widget.userId != null;
 
-
+  String errorMessage;
+  Restaurant restaurant;
+  //User user;
   TextEditingController mailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   ScaffoldState scaffoldState;
@@ -55,20 +68,22 @@ class _SignInState extends State<SignIn> {
                     fit: BoxFit.cover),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+                 crossAxisAlignment: CrossAxisAlignment.center,
+                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   MyCostumTitle(
                     MyTitle: 'Sign In',
                     size: 60,
                   ),
                   MyCustomInputBox(
+                    validate: _validate,
                     label: 'email',
                     inputHint: 'John',
                     color: KBlue,
                     controller: mailController,
                   ),
                   MyCustomInputBox(
+                    validate: _validate,
                     label: 'Password',
                     inputHint: '8+ Characters,1 Capital letter',
                     color: KBlue,
@@ -89,18 +104,26 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.15,),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.1,),
                   SubmiButton(
                     scrWidth: scrWidth,
                     scrHeight: scrHeight,
-                    tap:
-                       _isLoading ? null : _login,
-
-                    title: 'Create Account',
+                    tap: () {
+                      setState(() {
+                        mailController.text.isEmpty ? _validate = true : _validate = false;
+                        passwordController.text.isEmpty ? _validate = true : _validate = false;
+                      });
+                      _login();
+                      //_isLoading ? null : _login;
+                    },
+                    title: 'Login',
                     bcolor: KBlue,
                     size: 20,
                     color: Colors.white70,
                   ),
+                  // FlatButton(onPressed: (){
+                  //   _getProfile();
+                  // }, child:Container(color:Colors.blue,child: Text('getProfile')))
                 ],
               ),
             ),
@@ -109,7 +132,6 @@ class _SignInState extends State<SignIn> {
       ),
     );
   }
-
   void _login() async{
 
     setState(() {
@@ -122,16 +144,19 @@ class _SignInState extends State<SignIn> {
     };
 
     var res = await CallApi().postData(data, 'users/login');
-    var body = json.decode(res.body);
+    var body = jsonDecode(res.body);
     //if(body['status_code']==200){
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', body['token']);
-      print(body);
-      localStorage.setString('user', json.encode(body['user']));
-      Navigator.push(
-          context,
-          new MaterialPageRoute(
-              builder: (context) => AddRestaurant()));
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    localStorage.setString('token', body['token']);
+    token=body['token'];
+    _getProfile();
+    print(body);
+    // localStorage.setString('user', json.decode(body['userData']));
+    // print(body['userData']);
+    Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (context) =>Test()));
     // }else{
     //   print('error');
     // }
@@ -141,5 +166,52 @@ class _SignInState extends State<SignIn> {
       _isLoading = false;
     });
 
+  }
+
+  void _getProfile()async{
+    var res = await CallApi().getProfile('users/profile',token);
+    var body = json.decode(res.body);
+    SharedPreferences localStorage1 = await SharedPreferences.getInstance();
+    localStorage1.setInt('id', json.decode(body['id'].toString()));
+    print(body['id']);
+    _getUserRestaurant(body['id']);
+    userId=body['id'];
+    // username=body['username'];
+    // print(userId);
+    // print(body);
+  }
+
+  _getUserRestaurant(userId) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await userService.getUserRestauarnt(userId.toString()).then((response) {
+      if (response.error) {
+        errorMessage = response.errorMessage ?? 'An error occurred';
+      }
+      restaurant = response.data ;
+      print(restaurant.NomResto);
+      print(restaurant.id);
+      print(restaurant.adresse);
+      print(restaurant.Description);
+      _checkIfHasResto();
+      setState(() {
+        _isLoading = false;
+      });
+
+      // _titleController.text = floor.nom;
+      //_contentController.text = note.noteContent;
+    });
+  }
+
+  void _checkIfHasResto() async{
+    // check if token is there
+    // SharedPreferences localStorage = await SharedPreferences.getInstance();
+    // var token = localStorage.getString('id');
+    if(restaurant.id!= null){
+      setState(() {
+        _hasResto = true;
+      });
+    }
   }
 }

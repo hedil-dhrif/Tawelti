@@ -18,14 +18,14 @@ class CustomRow extends StatelessWidget {
         Text(
           title1,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 18,
             color: Colors.black38,
           ),
         ),
         Text(
           title2,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 18,
             color: Colors.black,
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
+import 'package:tawelti/constants.dart';
 import 'package:tawelti/widgets/CuisineItem.dart';
 
 
@@ -35,7 +36,7 @@ class GetCuisineCategoryState extends State<GetCuisineCategory> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Cuisine',style: TextStyle(fontSize: 20),),
+                  Text('Cuisine',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: KBlue),),
                   TextButton( child: Text('Autre',style: TextStyle(fontSize: 20, color: Colors.black,decoration: TextDecoration.underline))),
                 ],
               ),

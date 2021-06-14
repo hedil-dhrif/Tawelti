@@ -12,7 +12,7 @@ class CustomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.height * 0.15,
+      height: MediaQuery.of(context).size.height * 0.2,
       decoration: BoxDecoration(
         color: Color(0xffF4F4F4),
         borderRadius: BorderRadius.circular(10),
@@ -22,7 +22,7 @@ class CustomCard extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
-              border: Border(right: BorderSide(width: 1.5, color: KBeige)),
+              border: Border(right: BorderSide(width: 1.5, color: KBeige,)),
             ),
             child: CircleAvatar(
               radius: 40,
@@ -39,7 +39,7 @@ class CustomCard extends StatelessWidget {
             children: [
               CustomRow(
                 title1: 'Client name: ',
-                title2: 'Jhon Doe',
+                title2: 'Hedil Dhrif',
               ),
               SizedBox(
                 height: 5,
