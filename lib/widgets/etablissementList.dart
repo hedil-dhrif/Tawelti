@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:group_button/group_button.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
+import 'package:tawelti/api/api_Response.dart';
 import 'package:tawelti/constants.dart';
+import 'package:tawelti/models/etablissement.dart';
+import 'package:tawelti/services/etablissement.services.dart';
 import 'package:tawelti/widgets/CuisineItem.dart';
 
 
@@ -12,6 +17,8 @@ List <String> ListEtablissement = [
 
 
 class GetEtablissementCategory extends StatefulWidget {
+  final int restaurantID;
+  GetEtablissementCategory({this.restaurantID});
   @override
   GetEtablissementCategoryState createState() {
     return new GetEtablissementCategoryState();
@@ -21,7 +28,10 @@ class GetEtablissementCategory extends StatefulWidget {
 class GetEtablissementCategoryState extends State<GetEtablissementCategory> {
   List<String> text = ListEtablissement;
   bool _isSelected=false;
-
+  APIResponse<List<Etablissement>> _etablissementResponse;
+  final List<String> listAmbiances = [];
+  EtablissementServices get generalService => GetIt.I<EtablissementServices>();
+  bool _isLoading = true;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,28 +50,55 @@ class GetEtablissementCategoryState extends State<GetEtablissementCategory> {
                 ],
               ),
             ),
-            CheckboxGroup(
-                labels: text,
-                labelStyle: TextStyle(fontSize: 18, color: Colors.black,),
-                onSelected: (List<String> checked) => print(checked.toString())
-            ),
+            GroupButton(
+              spacing: 5,
+              isRadio: false,
+              direction: Axis.horizontal,
+              onSelected: (index, isSelected) {
+                _addItem(index);
+              },
+              buttons: text,
+              //selectedButtons: _getSelectedItemsFromDB(listAmbiances),
+
+              /// [List<int>] after 2.2.1 version
+              selectedTextStyle: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: KBlue,
+              ),
+              unselectedTextStyle: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+              selectedColor: Colors.white,
+              unselectedColor: Colors.grey[300],
+              selectedBorderColor: KBlue,
+              unselectedBorderColor: Colors.grey[500],
+              borderRadius: BorderRadius.circular(15.0),
+              selectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
+              unselectedShadow: <BoxShadow>[
+                BoxShadow(color: Colors.transparent)
+              ],
+            )
           ],
         ),
       ),
     );
   }
 
-//   List<LabeledCheckbox> _createList(List list){
-//     return List.generate(list.length, (index) => LabeledCheckbox(
-//       label: list[index],
-//             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-//             value: _isSelected,
-//             onChanged: (bool newValue,index) {
-//               setState(() {
-//                 _isSelected = newValue;
-//               });
-//             },
-//           ),
-//   );
-// }
+
+  _addItem(int i) async{
+    setState(() {
+      _isLoading = true;
+    });
+    final item=Etablissement(
+      type: text[i],
+      restaurantId: widget.restaurantID,
+    );
+    final result = await generalService.addEtablissement(item);
+    setState(() {
+      _isLoading = false;
+    });
+  }
 }

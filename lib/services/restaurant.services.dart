@@ -67,68 +67,7 @@ class RestaurantServices {
 
 
 
-  Future<APIResponse<List<Etablissement>>> getRestaurantsListEtablissement(
-      String restaurantId) {
-    return http
-        .get(
-      Uri.parse(API + 'restaurants/etablissement/' + restaurantId),
-    )
-        .then((data) {
-      if (data.statusCode == 200) {
-        final jsonData = json.decode(data.body);
-        final events = <Etablissement>[];
-        for (var item in jsonData) {
-          events.add(Etablissement.fromJson(item));
-        }
-        return APIResponse<List<Etablissement>>(data: events);
-      }
-      return APIResponse<List<Etablissement>>(
-          error: true, errorMessage: 'An error occured');
-    }).catchError((_) => APIResponse<List<Etablissement>>(
-        error: true, errorMessage: 'An error occured'));
-  }
 
-  Future<APIResponse<List<Cuisine>>> getRestaurantsListCuisine(
-      String restaurantId) {
-    return http
-        .get(
-      Uri.parse(API + 'restaurants/cuisine/' + restaurantId),
-    )
-        .then((data) {
-      if (data.statusCode == 200) {
-        final jsonData = json.decode(data.body);
-        final events = <Cuisine>[];
-        for (var item in jsonData) {
-          events.add(Cuisine.fromJson(item));
-        }
-        return APIResponse<List<Cuisine>>(data: events);
-      }
-      return APIResponse<List<Cuisine>>(
-          error: true, errorMessage: 'An error occured');
-    }).catchError((_) => APIResponse<List<Cuisine>>(
-        error: true, errorMessage: 'An error occured'));
-  }
-
-  Future<APIResponse<List<General>>> getRestaurantsListGeneral(
-      String restaurantId) {
-    return http
-        .get(
-      Uri.parse(API + 'restaurants/general/' + restaurantId),
-    )
-        .then((data) {
-      if (data.statusCode == 200) {
-        final jsonData = json.decode(data.body);
-        final events = <General>[];
-        for (var item in jsonData) {
-          events.add(General.fromJson(item));
-        }
-        return APIResponse<List<General>>(data: events);
-      }
-      return APIResponse<List<General>>(
-          error: true, errorMessage: 'An error occured');
-    }).catchError((_) => APIResponse<List<General>>(
-        error: true, errorMessage: 'An error occured'));
-  }
 
   Future<APIResponse<bool>> updateRestaurant(String restoID, Restaurant item) {
     return http

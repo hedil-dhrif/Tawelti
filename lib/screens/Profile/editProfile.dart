@@ -194,7 +194,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             DescriptionTextWidget(
               text: restaurant.Description,
             ),
-            GetCuisineCategory(),
+            GetCuisineCategory(restaurantID: restaurantId,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -231,8 +231,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             GetAmbianceCategory(
               restaurantId: restaurantId,
             ),
-            GetEtablissementCategory(),
-            GetGeneralCategory(),
+            GetEtablissementCategory(restaurantID: restaurantId,),
+            GetGeneralCategory(restaurantID: restaurantId,),
             GetBudget(),
             // AddPhotos(),
             Padding(

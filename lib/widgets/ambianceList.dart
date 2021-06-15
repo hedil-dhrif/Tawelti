@@ -8,6 +8,7 @@ import 'package:tawelti/models/ambiance.dart';
 import 'package:tawelti/services/ambiance.services.dart';
 import 'package:tawelti/services/restaurant.services.dart';
 import 'package:tawelti/widgets/CuisineItem.dart';
+import 'package:group_button/group_button.dart';
 
 List<String> ListAmbianceExisted = [
   'Festive',
@@ -28,58 +29,58 @@ class GetAmbianceCategory extends StatefulWidget {
 class GetAmbianceCategoryState extends State<GetAmbianceCategory> {
   List<String> text = ListAmbianceExisted;
   bool _isSelected = false;
-  List checkedDB = List();
+  List<String> checkedDB = [];
   APIResponse<List<Ambiance>> _ambianceResponse;
-  List<String> listAmbiances = [];
+  final List<String> listAmbiances = [];
   AmbianceServices get ambianceService => GetIt.I<AmbianceServices>();
-  var items = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     print(widget.restaurantId);
-    getAmbiance();
+    _fetchAmbiances();
     super.initState();
   }
 
-  getAmbiance() async {
+  _fetchAmbiances() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     _ambianceResponse = await ambianceService
         .getRestaurantsListAmbiance(widget.restaurantId.toString());
-    buildListAmbiances();
+    _buildListAmbiances();
+    setState(() {
+      _isLoading = false;
+    });
   }
 
-  buildListAmbiances() {
+  _buildListAmbiances() {
+    setState(() {
+      _isLoading = true;
+    });
+
     for (int i = 0; i < _ambianceResponse.data.length; i++) {
       listAmbiances.add(_ambianceResponse.data[i].type);
     }
-    print(listAmbiances);
-
-    return listAmbiances;
+    setState(() {
+      _isLoading = false;
+    });
   }
 
-  getSelectedItemsFromDB() {
+  _getSelectedItemsFromDB(list) {
+    final List<int> items = [];
+    //listAmbianceDB=await _buildListAmbiances();
     for (int i = 0; i < ListAmbianceExisted.length; i++) {
-      for (int j = 0; j < listAmbiances.length; j++) {
-        if (listAmbiances[j].toLowerCase() ==
-            ListAmbianceExisted[i].toLowerCase()) {
-          items.add(ListAmbianceExisted[j]);
+      for (int j = 0; j < list.length; j++) {
+        if (list[j].toLowerCase() == ListAmbianceExisted[i].toLowerCase()) {
+          items.add(i);
         }
       }
     }
+    print(items);
     return items;
   }
-
-  // void _onCategorySelected(bool selected, ambiance_type) {
-  //   checkedDB = getSelectedItemsFromDB();
-  //   if (selected == true) {
-  //     setState(() {
-  //       checkedDB.add(ambiance_type);
-  //     });
-  //   } else {
-  //     setState(() {
-  //       checkedDB.remove(ambiance_type);
-  //     });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -102,9 +103,11 @@ class GetAmbianceCategoryState extends State<GetAmbianceCategory> {
                         color: KBlue),
                   ),
                   TextButton(
-                    onPressed: (){
-                      insertAmbiance();
-                    },
+                      onPressed: () {
+                        setState(() {
+                          _getSelectedItemsFromDB(listAmbiances);
+                        });
+                      },
                       child: Text('Autre',
                           style: TextStyle(
                               fontSize: 20,
@@ -113,68 +116,53 @@ class GetAmbianceCategoryState extends State<GetAmbianceCategory> {
                 ],
               ),
             ),
-            // Container(
-            //   height: 500,
-            //   child: ListView.builder(
-            //       itemCount: text.length,
-            //       itemBuilder: (BuildContext context, int index) {
-            //         return CheckboxListTile(
-            //           value:checkedDB
-            //             .contains(text[index]),
-            //           onChanged: (bool selected) {
-            //             setState(() {
-            //               print(text[index]);
-            //               _onCategorySelected(selected,
-            //                   text[index]);
-            //             });
-            //           },
-            //           title: Text(text[index]),
-            //         );
-            //       }),
-            // )
-            CheckboxGroup(
-                labels: text,
-                //checked: getSelectedItemsFromDB(),
-                // onChange: (bool isChecked, String label, int index) {
-                //   setState(() {
-                //    // print(text[index]);
-                //     _onCategorySelected(isChecked, items[index]);
-                //   });
-                // },
-                labelStyle: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black,
-                ),
-                onSelected: (List<String> checked) {
-                  items
-                  = checked;
+            GroupButton(
+              spacing: 5,
+              isRadio: false,
+              direction: Axis.horizontal,
+              onSelected: (index, isSelected) {
+                _addItem(index);
+              },
+              buttons: text,
+              selectedButtons: _getSelectedItemsFromDB(listAmbiances),
 
-                }
+              /// [List<int>] after 2.2.1 version
+              selectedTextStyle: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: KBlue,
               ),
+              unselectedTextStyle: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+              selectedColor: Colors.white,
+              unselectedColor: Colors.grey[300],
+              selectedBorderColor: KBlue,
+              unselectedBorderColor: Colors.grey[500],
+              borderRadius: BorderRadius.circular(15.0),
+              selectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
+              unselectedShadow: <BoxShadow>[
+                BoxShadow(color: Colors.transparent)
+              ],
+            )
           ],
         ),
       ),
     );
   }
-
-
-
-  insertAmbiance(){
-    items.forEach((element) { 
-      ambianceService.addAmbiance(element);
-    });
-  }
-//   List<LabeledCheckbox> _createList(List list){
-//     return List.generate(list.length, (index) => LabeledCheckbox(
-//       label: list[index],
-//             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-//             value: _isSelected,
-//             onChanged: (bool newValue,index) {
-//               setState(() {
-//                 _isSelected = newValue;
-//               });
-//             },
-//           ),
-//   );
-// }
+_addItem(int i) async{
+  setState(() {
+    _isLoading = true;
+  });
+       final item=Ambiance(
+        type: text[i],
+        restaurantId: widget.restaurantId,
+      );
+  final result = await ambianceService.addAmbiance(item);
+  setState(() {
+    _isLoading = false;
+  });
+}
 }

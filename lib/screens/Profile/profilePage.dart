@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tawelti/api/api.dart';
+import 'package:tawelti/api/api_Response.dart';
 import 'package:tawelti/models/Restaurant.dart';
+import 'package:tawelti/models/ambiance.dart';
 import 'package:tawelti/models/user.dart';
 import 'package:tawelti/screens/Profile/editProfile.dart';
+import 'package:tawelti/services/ambiance.services.dart';
 import 'package:tawelti/services/restaurant.services.dart';
 import 'package:tawelti/services/user.services.dart';
 import 'package:tawelti/widgets/AppBar.dart';
@@ -27,6 +30,7 @@ GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 class _ProfilePageState extends State<ProfilePage> {
   //RestaurantServices get restaurantService => GetIt.I<RestaurantServices>();
   UserServices get userService=>GetIt.I<UserServices>();
+
   bool _isLoading = false;
  // bool get isEditing => widget.userId != null;
 
@@ -57,8 +61,6 @@ class _ProfilePageState extends State<ProfilePage> {
       print(user);
     });
   }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,4 +168,6 @@ class _ProfilePageState extends State<ProfilePage> {
       //_contentController.text = note.noteContent;
     });
   }
+
+
 }

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tawelti/models/etablissement.dart';
 import 'package:tawelti/screens/Addfloor/test.dart';
 import 'package:tawelti/screens/authentification/SignInPage.dart';
 import 'package:tawelti/services/ambiance.services.dart';
+import 'package:tawelti/services/cuisine.services.dart';
+import 'package:tawelti/services/etablissement.services.dart';
 import 'package:tawelti/services/event.services.dart';
 import 'package:tawelti/services/floor.services.dart';
+import 'package:tawelti/services/general.services.dart';
 import 'package:tawelti/services/reservation.services.dart';
 import 'package:tawelti/services/restaurant.services.dart';
 import 'package:tawelti/services/table.services.dart';
@@ -24,6 +28,9 @@ void setupLocator() {
   GetIt.I.registerLazySingleton(() => RestaurantServices());
   GetIt.I.registerLazySingleton(() => ReservationServices());
   GetIt.I.registerLazySingleton(() => AmbianceServices());
+  GetIt.I.registerLazySingleton(() => GeneralServices());
+  GetIt.I.registerLazySingleton(() => EtablissementServices());
+  GetIt.I.registerLazySingleton(() => CuisineServices());
 }
 
 void main() {
